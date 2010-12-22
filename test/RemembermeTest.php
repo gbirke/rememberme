@@ -1,10 +1,6 @@
 <?php
 
-ini_set('include_path', dirname(__FILE__).'/../src' . PATH_SEPARATOR . ini_get('include_path'));
-
-require_once 'Rememberme.php';
-require_once 'Rememberme/Cookie.php';
-require_once 'Rememberme/Storage/Base.php';
+require_once dirname(__FILE__).'/bootstrap.php';
 
 class RemembermeTest extends PHPUnit_Framework_TestCase
 {
