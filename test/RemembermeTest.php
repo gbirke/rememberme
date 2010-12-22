@@ -254,28 +254,38 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
   /* Salting test */
 
-  public function testOptionalSaltIsAddedToTokens() {
+  public function testSaltIsAddedToTokensOnLogin() {
+    $salt = "Mozilla Firefox 4.0";
+    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
+      $this->userid, $this->validToken, $this->validPersistentToken));
+    $this->storage->expects($this->once())
+      ->method("findTriplet")
+      ->with($this->equalTo($this->userid), $this->equalTo($this->validToken.$salt), $this->equalTo($this->validPersistentToken.$salt))
+      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+    $this->storage->expects($this->once())
+      ->method("storeTriplet")
+      ->with(
+        $this->equalTo($this->userid), 
+        $this->matchesRegularExpression('/^[a-f0-9]{32,}'.preg_quote($salt)."$/"), 
+        $this->equalTo($this->validPersistentToken.$salt)
+    );
+    $this->rememberme->setSalt($salt);
+    $this->rememberme->login($this->userid);
+  }
+
+  public function testSaltIsAddedToTokensOnCookieIsValid() {
     $salt = "Mozilla Firefox 4.0";
     $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
       $this->userid, $this->validToken, $this->validPersistentToken));
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->with($this->equalTo($this->userid), $this->equalTo($this->validToken.$salt), $this->equalTo($this->validPersistentToken.$salt));
-    $this->rememberme->login($this->userid, $salt);
+    $this->rememberme->setSalt($salt);
+    $this->rememberme->cookieIsValid($this->userid);
   }
 
-  /* Other functions */
-
-  public function testCreateCookieCreatesCookieAndStoresTriplets() {
-    $now = time();
+  public function testSaltIsAddedToTokensOnCreateCookie() {
     $salt = "Mozilla Firefox 4.0";
-    $this->cookie->expects($this->once())
-      ->method("setcookie")
-      ->with(
-        $this->equalTo($this->rememberme->getCookieName()),
-        $this->matchesRegularExpression('/^'.$this->userid.'\|[a-f0-9]{32,}\|[a-f0-9]{32,}$/'),
-        $this->greaterThan($now)
-      );
     $testExpr = '/^[a-f0-9]{32,}'.preg_quote($salt).'$/';
     $this->storage->expects($this->once())
       ->method("storeTriplet")
@@ -283,8 +293,45 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
         $this->equalTo($this->userid),
         $this->matchesRegularExpression($testExpr),
         $this->matchesRegularExpression($testExpr)
+    );
+    $this->rememberme->setSalt($salt);
+    $this->rememberme->createCookie($this->userid);
+  }
+
+  public function testSaltIsAddedToTokensOnClearCookie() {
+    $salt = "Mozilla Firefox 4.0";
+    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
+      $this->userid, $this->validToken, $this->validPersistentToken));
+    $this->storage->expects($this->once())
+      ->method("cleanTriplet")
+      ->with(
+        $this->equalTo($this->userid),
+        $this->equalTo($this->validPersistentToken.$salt)
+    );
+    $this->rememberme->setSalt($salt);
+    $this->rememberme->clearCookie($this->userid);
+  }
+
+  /* Other functions */
+
+  public function testCreateCookieCreatesCookieAndStoresTriplets() {
+    $now = time();
+    $this->cookie->expects($this->once())
+      ->method("setcookie")
+      ->with(
+        $this->equalTo($this->rememberme->getCookieName()),
+        $this->matchesRegularExpression('/^'.$this->userid.'\|[a-f0-9]{32,}\|[a-f0-9]{32,}$/'),
+        $this->greaterThan($now)
       );
-    $this->rememberme->createCookie($this->userid, $salt);
+    $testExpr = '/^[a-f0-9]{32,}$/';
+    $this->storage->expects($this->once())
+      ->method("storeTriplet")
+      ->with(
+        $this->equalTo($this->userid),
+        $this->matchesRegularExpression($testExpr),
+        $this->matchesRegularExpression($testExpr)
+      );
+    $this->rememberme->createCookie($this->userid);
   }
 
   public function testClearCookieExpiresCookieAndDeletesTriplet() {

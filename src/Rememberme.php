@@ -28,6 +28,8 @@ class Rememberme {
   protected $lastLoginTokenWasInvalid = false;
 
   protected $cleanStoredTokensOnInvalidResult = true;
+
+  protected $salt = "";
   
   public function __construct(Rememberme_Storage_Base $storage) {
     $this->storage = $storage;
@@ -37,23 +39,20 @@ class Rememberme {
   /**
    * Check Credentials from cookie
    * @param  $credential
-   * @param string $salt Optional salt that makes the tokens more secure / user specific.
-   *  You must use the same salt when calling {@link Rememberme::createCookie()}!
    * @return bool
    */
-  public function login($credential, $salt="") {
+  public function login($credential) {
 
     $cookieValues = $this->getCookieValues();
     if(!$cookieValues) {
       return false;
     }
-
     $loginWasSuccessful = false;
-    switch($this->storage->findTriplet($cookieValues[0], $cookieValues[1].$salt, $cookieValues[2].$salt)) {
+    switch($this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt)) {
       case Rememberme_Storage_Base::TRIPLET_FOUND:
         $expire = time() + $this->expireTime;
         $newToken = $this->createToken();
-        $this->storage->storeTriplet($credential, $newToken.$salt, $cookieValues[2].$salt, $expire);
+        $this->storage->storeTriplet($credential, $newToken.$this->salt, $cookieValues[2].$this->salt, $expire);
         $this->cookie->setCookie($this->cookieName, implode("|", array($credential,$newToken, $cookieValues[2])), $expire);
         $loginWasSuccessful = true; 
         break;
@@ -65,29 +64,28 @@ class Rememberme {
         }
         break;
     }
-    
     return $loginWasSuccessful;
   }
 
-  public function cookieIsValid($credential, $salt="") {
+  public function cookieIsValid($credential) {
     $cookieValues = $this->getCookieValues();
     if(!$cookieValues) {
       return false;
     }
-    $state = $this->storage->findTriplet($cookieValues[0], $cookieValues[1].$salt, $cookieValues[2].$salt);
+    $state = $this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt);
     return $state == Rememberme_Storage_Base::TRIPLET_FOUND;
   }
 
-  public function createCookie($credential, $salt="") {
+  public function createCookie($credential) {
     $newToken = $this->createToken();
     $newPersistentToken = $this->createToken();
     $expire = time() + $this->expireTime;
-    $this->storage->storeTriplet($credential, $newToken.$salt, $newPersistentToken.$salt, $expire);
+    $this->storage->storeTriplet($credential, $newToken.$this->salt, $newPersistentToken.$this->salt, $expire);
     $this->cookie->setCookie($this->cookieName, implode("|", array($credential,$newToken, $newPersistentToken)), $expire);
     return $this;
   }
 
-  public function clearCookie($credential, $salt="") {
+  public function clearCookie($credential) {
     if(empty($_COOKIE[$this->cookieName]))
       return false;
     $cookieValues = explode("|", $_COOKIE[$this->cookieName], 3);
@@ -96,7 +94,7 @@ class Rememberme {
     if(count($cookieValues) < 3) {
       return false;
     }
-    $this->storage->cleanTriplet($credential, $cookieValues[2].$salt);
+    $this->storage->cleanTriplet($credential, $cookieValues[2].$this->salt);
     return true;
   }
   
@@ -172,6 +170,28 @@ class Rememberme {
   public function setExpireTime($expireTime) {
     $this->expireTime = $expireTime;
     return $this;
+  }
+
+  /**
+   *
+   * @return string
+   */
+  public function getSalt() {
+    return $this->salt;
+  }
+
+  /**
+   * The salt is additional information that is added to the tokens to make
+   * them more unqiue and secure. The salt is not stored in the cookie and
+   * should not saved in the storage.
+   *
+   * For example, to bind a token to an IP address use $_SERVER['REMOTE_ADDR'].
+   * To bind a token to the browser (user agent), use $_SERVER['HTTP_USER_AGENT].
+   * You could also use a long random string that is uniqe to your application.
+   * @param string $salt
+   */
+  public function setSalt($salt) {
+    $this->salt = $salt;
   }
 
 }
