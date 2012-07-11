@@ -9,7 +9,7 @@
  *
  * @author Gabriel Birke
  */
-abstract class Rememberme_Storage_DB extends Rememberme_Storage_Base {
+abstract class Rememberme_Storage_DB implements Rememberme_Storage_StorageInterface {
   
   /**
    *

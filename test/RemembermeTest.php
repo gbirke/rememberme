@@ -25,7 +25,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   protected $storage;
   
   function setUp() {
-    $this->storage = $this->getMockForAbstractClass("Rememberme_Storage_Base");
+    $this->storage = $this->getMock("Rememberme_Storage_StorageInterface");
     $this->rememberme = new Rememberme($this->storage);
     $this->cookie = $this->getMock("Rememberme_Cookie", array("setcookie"));
     $this->rememberme->setCookie($this->cookie);
@@ -65,7 +65,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
       
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->assertEquals($this->userid, $this->rememberme->login());
   }
 
@@ -75,7 +75,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $_COOKIE[$this->rememberme->getCookieName()] = $oldcookieValue;
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with(
@@ -93,7 +93,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
       $this->userid, $this->validToken, $this->validPersistentToken));
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->storage->expects($this->once())
       ->method("storeTriplet")
       ->with(
@@ -113,7 +113,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
       $this->userid, $this->validToken, $this->validPersistentToken));
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->anything(),
@@ -129,7 +129,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $_COOKIE[$this->rememberme->getCookieName()] = $oldcookieValue;
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->anything(),
@@ -149,7 +149,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $now = time();
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->anything(), $this->anything(), $this->greaterThan($now));
@@ -164,7 +164,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_NOT_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_NOT_FOUND));
     $this->assertFalse($this->rememberme->login());
   }
 
@@ -174,7 +174,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_INVALID));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_INVALID));
     $this->assertFalse($this->rememberme->login());
   }
 
@@ -184,7 +184,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $now = time();
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_INVALID));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_INVALID));
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->anything(), $this->anything(), $this->lessThan($now));
@@ -196,7 +196,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
       $this->userid, $this->invalidToken, $this->validPersistentToken));
     $this->storage->expects($this->any())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_INVALID));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_INVALID));
     $this->storage->expects($this->once())
       ->method("cleanAllTriplets")
       ->with($this->equalTo($this->userid));
@@ -212,7 +212,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_INVALID));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_INVALID));
     $this->assertFalse($this->rememberme->loginTokenWasInvalid());
     $this->rememberme->login();
     $this->assertTrue($this->rememberme->loginTokenWasInvalid());
@@ -226,7 +226,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $_COOKIE[$cookieName] = implode("|", array($this->userid, $this->validToken, $this->validPersistentToken));
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->equalTo($cookieName));
@@ -241,7 +241,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->rememberme->setExpireTime($expireTime);
     $this->storage->expects($this->once())
       ->method("findTriplet")
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->anything(), $this->anything(), $this->equalTo($now+$expireTime, 10));
@@ -257,7 +257,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->with($this->equalTo($this->userid), $this->equalTo($this->validToken.$salt), $this->equalTo($this->validPersistentToken.$salt))
-      ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
+      ->will($this->returnValue(Rememberme_Storage_StorageInterface::TRIPLET_FOUND));
     $this->storage->expects($this->once())
       ->method("storeTriplet")
       ->with(

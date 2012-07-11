@@ -7,7 +7,7 @@
 /**
  * File-Based Storage
  */
-class Rememberme_Storage_File extends Rememberme_Storage_Base {
+class Rememberme_Storage_File implements Rememberme_Storage_StorageInterface {
 
   protected $path="";
 
@@ -15,6 +15,7 @@ class Rememberme_Storage_File extends Rememberme_Storage_Base {
 
   public function __construct($path="", $suffix = ".txt") {
     $this->path = $path;
+    $this->suffix = $suffix;
   }
 
   public function findTriplet($credential, $token, $persistentToken) {

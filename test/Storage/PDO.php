@@ -60,18 +60,18 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
 
   public function testFindTripletReturnsFoundIfDataMatches() {
     $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
-    $this->assertEquals(Rememberme_Storage_Base::TRIPLET_FOUND, $result);
+    $this->assertEquals(Rememberme_Storage_StorageInterface::TRIPLET_FOUND, $result);
   }
 
   public function testFindTripletReturnsNotFoundIfNoDataMatches() {
     $this->pdo->exec("TRUNCATE tokens");
     $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
-    $this->assertEquals(Rememberme_Storage_Base::TRIPLET_NOT_FOUND, $result);
+    $this->assertEquals(Rememberme_Storage_StorageInterface::TRIPLET_NOT_FOUND, $result);
   }
 
   public function testFindTripletReturnsInvalidTokenIfTokenIsInvalid() {
     $result = $this->storage->findTriplet($this->userid, $this->invalidToken, $this->validPersistentToken);
-    $this->assertEquals(Rememberme_Storage_Base::TRIPLET_INVALID, $result);
+    $this->assertEquals(Rememberme_Storage_StorageInterface::TRIPLET_INVALID, $result);
   }
 
   public function testStoreTripletSavesValuesIntoDatabase() {
