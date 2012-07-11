@@ -43,7 +43,7 @@ if(!is_writable($storagePath) || !is_dir($storagePath)) {
             To run the example, please create the directory and give it the
             correct permissions.");
 }
-$storage = new Rememberme_Storage_File();
+$storage = new Rememberme_Storage_File($storagePath);
 $rememberMe = new Rememberme($storage);
 
 // First, we initialize the session, to see if we are already logged in
@@ -94,6 +94,9 @@ else {
           // If the user wants to be remembered, create Rememberme cookie
           if(!empty($_POST['rememberme'])) {
             $rememberMe->createCookie($username);
+          }
+          else {
+            $rememberMe->clearCookie();
           }
           redirect();
         }
