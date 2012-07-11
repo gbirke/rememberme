@@ -4,7 +4,7 @@
         <p>The remember me cookie is active.
           Cookie value is <code><?php echo $_COOKIE['PHP_REMEMBERME']; ?></code></p>
 <?php else: ?>
-        p>The remember me cookie is not active.</p>
+        <p>The remember me cookie is not active.</p>
 <?php endif; ?>     
 <?php if(!empty($_SESSION['remembered_by_cookie'])): ?>
         <p>You were logged in with the "Remember me" cookie. In a real application
@@ -16,7 +16,7 @@
 <ol>
   <li>Login to this page with a non-Firefox Browser. In the following steps I
     will call that browser "Chrome" :) <br>
-    Make Sure to check the "Remember me" checkbox when logging in.</li>
+    Make sure to check the "Remember me" checkbox when logging in.</li>
   <li>Copy the cookie value from above into the clipboard.</li>
   <li>Quit Chrome to end the session.</li>
   <li>Start Firefox and install the <a href="https://addons.mozilla.org/de/firefox/addon/6683/">Firecookie</a> extension if needed.</li>
