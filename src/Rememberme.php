@@ -93,19 +93,31 @@ class Rememberme {
     return $this;
   }
 
-  public function clearCookie($credential) {
+  /**
+   * Expire the rememberme cookie, unset $_COOKIE[$this->cookieName] value and
+   * remove current login triplet from storage.
+   *
+   * @param boolean $clearFromStorage
+   * @return boolean
+   */
+  public function clearCookie($clearFromStorage=true) {
     if(empty($_COOKIE[$this->cookieName]))
       return false;
     $cookieValues = explode("|", $_COOKIE[$this->cookieName], 3);
     $this->cookie->setCookie($this->cookieName, "", time() - $this->expireTime);
+    unset($_COOKIE[$this->cookieName]);
+
+    if(!$clearFromStorage) {
+        return true;
+    }
 
     if(count($cookieValues) < 3) {
       return false;
     }
-    $this->storage->cleanTriplet($credential, $cookieValues[2].$this->salt);
+    $this->storage->cleanTriplet($cookieValues[0], $cookieValues[2].$this->salt);
     return true;
   }
-  
+
   public function getCookieName() {
     return $this->cookieName;
   }

@@ -305,7 +305,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
         $this->equalTo($this->validPersistentToken.$salt)
     );
     $this->rememberme->setSalt($salt);
-    $this->rememberme->clearCookie($this->userid);
+    $this->rememberme->clearCookie(true);
   }
 
   /* Other functions */
@@ -347,7 +347,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
         $this->equalTo($this->userid),
         $this->equalTo($this->validPersistentToken)
       );
-    $this->rememberme->clearCookie($this->userid);
+    $this->rememberme->clearCookie(true);
   }
 
 
