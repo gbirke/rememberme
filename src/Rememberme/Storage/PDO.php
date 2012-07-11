@@ -1,11 +1,10 @@
 <?php
 /* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * 
  */
 
 /**
- * Description of PDO
+ * Store login tokens in database with PDO class
  *
  * @author birke
  */
@@ -18,7 +17,7 @@ class Rememberme_Storage_PDO extends Rememberme_Storage_DB {
   protected $connection;
 
   public function findTriplet($credential, $token, $persistentToken) {
-    // We don't store the binary sha1 values because otherwise we could not use
+    // We don't store the sha1 as binary values because otherwise we could not use
     // proper XML test data
     $sql = "SELECT IF(SHA1(?) = {$this->tokenColumn}, 1, -1) AS token_match " .
            "FROM {$this->tableName} WHERE {$this->credentialColumn} = ? " .
@@ -66,8 +65,6 @@ class Rememberme_Storage_PDO extends Rememberme_Storage_DB {
   public function setConnection(PDO $connection) {
     $this->connection = $connection;
   }
-
-
 
 }
 ?>

@@ -4,7 +4,7 @@
  */
 
 /**
- * This abstract class contains propertries with getters and setters for all
+ * This abstract class contains properties with getters and setters for all
  * database storage classes
  *
  * @author Gabriel Birke

@@ -5,7 +5,7 @@ class Rememberme {
   protected $cookieName = "PHP_REMEMBERME";
   
   /**
-   * @ var Rememberme_Cookie
+   * @var Rememberme_Cookie
    */
   protected $cookie;
   
@@ -27,8 +27,17 @@ class Rememberme {
    */
   protected $lastLoginTokenWasInvalid = false;
 
+  /**
+   * If the login token was invalid, delete all login tokens of this user
+   *
+   * @var type
+   */
   protected $cleanStoredTokensOnInvalidResult = true;
 
+  /**
+   * Additional salt to add more entropy when the tokens are stored as hashes.
+   * @var type
+   */
   protected $salt = "";
   
   public function __construct(Rememberme_Storage_Base $storage) {

@@ -1,5 +1,6 @@
 <?php
-// Include PHP before any content si generated to we can set cookies
+// Include PHP before any content is generated to we can set cookies
+// Sets the $content variable with the dynamic page content
 include "./action.php";
 ?>
 <!doctype html>

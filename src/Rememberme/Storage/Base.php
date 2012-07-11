@@ -15,7 +15,7 @@ abstract class Rememberme_Storage_Base {
   /**
    * Return Tri-state value constant
    *
-   * @param mixed $credential Unique credential (oder id, email address, user name)
+   * @param mixed $credential Unique credential (user id, email address, user name)
    * @param string $token One-Time Token
    * @param string $persistentToken Persistent Token
    * @return int
@@ -30,7 +30,7 @@ abstract class Rememberme_Storage_Base {
    * @param mixed $credential
    * @param string $token
    * @param string $persistentToken
-   * @param int $expire Timestamp when this file will expire
+   * @param int $expire Timestamp when this triplet will expire (0=no expiry)
    */
   public abstract function storeTriplet($credential, $token, $persistentToken, $expire=0);
 
