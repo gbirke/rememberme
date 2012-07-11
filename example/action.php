@@ -66,8 +66,9 @@ if(!empty($_SESSION['username'])) {
 // If we are not logged in, try to log in via Rememberme cookie
 else {
   // If we can present the correct tokens from the cookie, we are logged in
-  if($rememberMe->login($username)) {
-    $_SESSION['username'] = $username;
+  $loginresult = $rememberMe->login();
+  if($loginresult) {
+    $_SESSION['username'] = $loginresult;
     // There is a chance that an attacker has stolen the login token, so we store
     // the fact that the user was logged in via RememberMe (instead of login form)
     $_SESSION['remembered_by_cookie'] = true;

@@ -47,33 +47,32 @@ class Rememberme {
 
   /**
    * Check Credentials from cookie
-   * @param  $credential
-   * @return bool
+   * @return bool|string False if login was not successful, credential string if it was successful
    */
-  public function login($credential) {
+  public function login() {
 
     $cookieValues = $this->getCookieValues();
     if(!$cookieValues) {
       return false;
     }
-    $loginWasSuccessful = false;
+    $loginResult = false;
     switch($this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt)) {
       case Rememberme_Storage_Base::TRIPLET_FOUND:
         $expire = time() + $this->expireTime;
         $newToken = $this->createToken();
-        $this->storage->storeTriplet($credential, $newToken.$this->salt, $cookieValues[2].$this->salt, $expire);
-        $this->cookie->setCookie($this->cookieName, implode("|", array($credential,$newToken, $cookieValues[2])), $expire);
-        $loginWasSuccessful = true; 
+        $this->storage->storeTriplet($cookieValues[0], $newToken.$this->salt, $cookieValues[2].$this->salt, $expire);
+        $this->cookie->setCookie($this->cookieName, implode("|", array($cookieValues[0],$newToken, $cookieValues[2])), $expire);
+        $loginResult = $cookieValues[0];
         break;
       case Rememberme_Storage_Base::TRIPLET_INVALID:
         $this->cookie->setCookie($this->cookieName, "", time() - $this->expireTime);
         $this->lastLoginTokenWasInvalid = true;
         if($this->cleanStoredTokensOnInvalidResult) {
-          $this->storage->cleanAllTriplets($credential);
+          $this->storage->cleanAllTriplets($cookieValues[0]);
         }
         break;
     }
-    return $loginWasSuccessful;
+    return $loginResult;
   }
 
   public function cookieIsValid($credential) {

@@ -37,15 +37,15 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   
   public function testReturnFalseIfNoCookieExists()
   {
-    $this->assertFalse($this->rememberme->login($this->userid));
+    $this->assertFalse($this->rememberme->login());
   }
 
   public function testReturnFalseIfCookieIsInvalid()
   {
     $_COOKIE = array($this->rememberme->getCookieName() => "DUMMY");
-    $this->assertFalse($this->rememberme->login($this->userid));
+    $this->assertFalse($this->rememberme->login());
     $_COOKIE = array($this->rememberme->getCookieName() => $this->userid."|a");
-    $this->assertFalse($this->rememberme->login($this->userid));
+    $this->assertFalse($this->rememberme->login());
   }
   
   public function testLoginTriesToFindTripletWithValuesFromCookie() {
@@ -54,7 +54,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->with($this->equalTo($this->userid), $this->equalTo($this->validToken), $this->equalTo($this->validPersistentToken));
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   /* Success cases */
@@ -66,7 +66,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_FOUND));
-    $this->assertTrue($this->rememberme->login($this->userid));
+    $this->assertEquals($this->userid, $this->rememberme->login());
   }
 
   public function testStoreNewTripletInCookieIfTripletIsFound() {
@@ -85,7 +85,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
           $this->logicalNot($this->equalTo($oldcookieValue))
         )
       );
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   public function testStoreNewTripletInStorageIfTripletIsFound() {
@@ -104,7 +104,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
         ),
         $this->equalTo($this->validPersistentToken)
         );
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   public function testCookieContainsUserIDAndHexTokensIfTripletIsFound()
@@ -119,7 +119,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
       ->with($this->anything(),
           $this->matchesRegularExpression('/^'.$this->userid.'\|[a-f0-9]{32,}\|[a-f0-9]{32,}$/')
         );
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   public function testCookieContainsNewTokenIfTripletIsFound()
@@ -138,7 +138,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
             $this->logicalNot($this->equalTo($oldcookieValue))
           )
         );
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   public function testCookieExpiryIsInTheFutureIfTripletIsFound()
@@ -153,7 +153,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->anything(), $this->anything(), $this->greaterThan($now));
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   /* Failure Cases */
@@ -165,7 +165,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_NOT_FOUND));
-    $this->assertFalse($this->rememberme->login($this->userid));
+    $this->assertFalse($this->rememberme->login());
   }
 
   public function testFalseIfTripletIsInvalid() {
@@ -175,7 +175,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_INVALID));
-    $this->assertFalse($this->rememberme->login($this->userid));
+    $this->assertFalse($this->rememberme->login());
   }
 
   public function testCookieIsExpiredIfTripletIsInvalid() {
@@ -188,7 +188,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->anything(), $this->anything(), $this->lessThan($now));
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   public function testAllStoredTokensAreClearedIfTripletIsInvalid() {
@@ -201,9 +201,9 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
       ->method("cleanAllTriplets")
       ->with($this->equalTo($this->userid));
     $this->rememberme->setCleanStoredTokensOnInvalidResult(true);
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
     $this->rememberme->setCleanStoredTokensOnInvalidResult(false);
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   public function testInvalidTripletStateIsStored() {
@@ -214,7 +214,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
       ->method("findTriplet")
       ->will($this->returnValue(Rememberme_Storage_Base::TRIPLET_INVALID));
     $this->assertFalse($this->rememberme->loginTokenWasInvalid());
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
     $this->assertTrue($this->rememberme->loginTokenWasInvalid());
   }
 
@@ -230,7 +230,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->equalTo($cookieName));
-    $this->assertTrue($this->rememberme->login($this->userid));
+    $this->assertEquals($this->userid, $this->rememberme->login());
   }
 
   public function testCookieIsSetToConfiguredExpiryDate() {
@@ -245,7 +245,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->cookie->expects($this->once())
       ->method("setcookie")
       ->with($this->anything(), $this->anything(), $this->equalTo($now+$expireTime, 10));
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   /* Salting test */
@@ -266,7 +266,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
         $this->equalTo($this->validPersistentToken.$salt)
     );
     $this->rememberme->setSalt($salt);
-    $this->rememberme->login($this->userid);
+    $this->rememberme->login();
   }
 
   public function testSaltIsAddedToTokensOnCookieIsValid() {
