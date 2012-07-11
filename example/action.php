@@ -37,7 +37,13 @@ $username = "demo";
 $password = "demo";
 
 // Initialize RememberMe Library with file storage
-$storage = new Rememberme_Storage_File(dirname(__FILE__)."/tokens");
+$storagePath = dirname(__FILE__)."/tokens";
+if(!is_writable($storagePath) || !is_dir($storagePath)) {
+    die("'$storagePath' does not exist or is not writable by the web server.
+            To run the example, please create the directory and give it the
+            correct permissions.");
+}
+$storage = new Rememberme_Storage_File();
 $rememberMe = new Rememberme($storage);
 
 // First, we initialize the session, to see if we are already logged in
