@@ -4,10 +4,11 @@
  *
  */
 
+namespace Birke\Rememberme\Storage;
 /**
  * File-Based Storage
  */
-class Rememberme_Storage_File implements Rememberme_Storage_StorageInterface {
+class File implements StorageInterface {
 
   protected $path="";
 

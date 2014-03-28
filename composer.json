@@ -1,0 +1,19 @@
+{
+    "name": "birke/rememberme",
+    "version": "1.0.0",
+    "description": "Secure \"Remember Me\" functionality",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gabriel Birke",
+            "email": "gb@birke-software.de"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {"Birke\\": "src/"}
+    },
+    "require": {
+
+    }
+}

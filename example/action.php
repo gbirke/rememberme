@@ -8,15 +8,9 @@
  * @author Gabriel Birke
  */
 
-/**
- * Very simplicistic and inefficient autoload class so I don't have to require all the files
- * @param  $class
- * @return void
- */
-function rememberAutoload($class) {
-  require dirname(__FILE__).'/../src/'.strtr($class,'_',DIRECTORY_SEPARATOR).".php";
-}
-spl_autoload_register("rememberAutoload");
+require_once __DIR__.'/../vendor/autoload.php';
+
+use Birke\Rememberme;
 
 /**
  * Helper function for redirecting and destroying the session
@@ -43,8 +37,8 @@ if(!is_writable($storagePath) || !is_dir($storagePath)) {
             To run the example, please create the directory and give it the
             correct permissions.");
 }
-$storage = new Rememberme_Storage_File($storagePath);
-$rememberMe = new Rememberme($storage);
+$storage = new Rememberme\Storage\File($storagePath);
+$rememberMe = new Rememberme\Authenticator($storage);
 
 // First, we initialize the session, to see if we are already logged in
 session_start();
@@ -113,7 +107,7 @@ else {
 
 // template function for including content, nothing interesting
 function tpl($template, $msg="") {
-  $fn = dirname(__FILE__). DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . $template . ".php";
+  $fn = __DIR__ . DIRECTORY_SEPARATOR . "templates" . DIRECTORY_SEPARATOR . $template . ".php";
   if(file_exists($fn)) {
     ob_start();
     include $fn;

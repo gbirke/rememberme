@@ -1,12 +1,14 @@
 <?php
 
+namespace Birke\Rememberme\Storage;
+
 /**
  * This interface is for storing the credential/token/persistentToken triplets
  * 
  * IMPORTANT SECURITY NOTICE: The storage should not store the token values in the clear.
  * Always use a secure hash function!
  */ 
-interface Rememberme_Storage_StorageInterface {
+interface StorageInterface {
   
   const TRIPLET_FOUND     =  1,
         TRIPLET_NOT_FOUND =  0,

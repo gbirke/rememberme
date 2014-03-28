@@ -1,16 +1,18 @@
 <?php
 
-class Rememberme {
+namespace Birke\Rememberme;
+
+class Authenticator {
   
   protected $cookieName = "PHP_REMEMBERME";
   
   /**
-   * @var Rememberme_Cookie
+   * @var Birke\Rememberme\Cookie
    */
   protected $cookie;
   
   /**
-   * @var Rememberme_Storage_StorageInterface
+   * @var Birke\Rememberme\Storage\StorageInterface
    */
   protected $storage;
 
@@ -20,7 +22,7 @@ class Rememberme {
   protected $expireTime =  604800; // 1 week
 
   /**
-   * If the return from the storage was Rememberme_Storage_StorageInterface::TRIPLET_INVALID,
+   * If the return from the storage was Birke\Rememberme\Storage\StorageInterface::TRIPLET_INVALID,
    * this is set to true
    *
    * @var bool
@@ -40,9 +42,9 @@ class Rememberme {
    */
   protected $salt = "";
   
-  public function __construct(Rememberme_Storage_StorageInterface $storage) {
+  public function __construct(Storage\StorageInterface $storage) {
     $this->storage = $storage;
-    $this->cookie = new Rememberme_Cookie();
+    $this->cookie = new Cookie();
   }
 
   /**
@@ -57,14 +59,14 @@ class Rememberme {
     }
     $loginResult = false;
     switch($this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt)) {
-      case Rememberme_Storage_StorageInterface::TRIPLET_FOUND:
+      case Storage\StorageInterface::TRIPLET_FOUND:
         $expire = time() + $this->expireTime;
         $newToken = $this->createToken();
         $this->storage->storeTriplet($cookieValues[0], $newToken.$this->salt, $cookieValues[2].$this->salt, $expire);
         $this->cookie->setCookie($this->cookieName, implode("|", array($cookieValues[0],$newToken, $cookieValues[2])), $expire);
         $loginResult = $cookieValues[0];
         break;
-      case Rememberme_Storage_StorageInterface::TRIPLET_INVALID:
+      case Storage\StorageInterface::TRIPLET_INVALID:
         $this->cookie->setCookie($this->cookieName, "", time() - $this->expireTime);
         $this->lastLoginTokenWasInvalid = true;
         if($this->cleanStoredTokensOnInvalidResult) {
@@ -81,7 +83,7 @@ class Rememberme {
       return false;
     }
     $state = $this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt);
-    return $state == Rememberme_Storage_StorageInterface::TRIPLET_FOUND;
+    return $state == Storage\StorageInterface::TRIPLET_FOUND;
   }
 
   public function createCookie($credential) {
@@ -127,7 +129,7 @@ class Rememberme {
     return $this;
   }
   
-  public function setCookie(Rememberme_Cookie $cookie) {
+  public function setCookie(Cookie $cookie) {
     $this->cookie = $cookie;
     return $this;
   }
@@ -215,5 +217,3 @@ class Rememberme {
   }
 
 }
-
-

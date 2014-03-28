@@ -1,9 +1,11 @@
 <?php
 
+namespace Birke\Rememberme;
+
 /**
  * Wrapper around setcookie function for better testability
  */ 
-class Rememberme_Cookie {
+class Cookie {
 
   /**
    * @var string

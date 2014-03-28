@@ -3,13 +3,15 @@
  * 
  */
 
+namespace Birke\Rememberme\Storage;
+
 /**
  * This abstract class contains properties with getters and setters for all
  * database storage classes
  *
  * @author Gabriel Birke
  */
-abstract class Rememberme_Storage_DB implements Rememberme_Storage_StorageInterface {
+abstract class DB implements StorageInterface {
   
   /**
    *

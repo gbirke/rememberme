@@ -3,12 +3,14 @@
  * 
  */
 
+namespace Birke\Rememberme\Storage;
+
 /**
  * Store login tokens in database with PDO class
  *
  * @author birke
  */
-class Rememberme_Storage_PDO extends Rememberme_Storage_DB {
+class PDO extends DB {
     
   /**
    *

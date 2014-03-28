@@ -1,3 +1,4 @@
+# Secure "Remember Me"
 This library implements the best practices for implementing a secure
 "Remember Me" functionality on web sites. Login information and unique secure 
 tokens are stored in a cookie. If the user visits the site, the login information 
@@ -18,6 +19,13 @@ against the following attack scenarios:
  - An attacker has obtained the database of login tokens from the server. The 
    stored tokens are hashed so he can't use them without computational effort
    (rainbow tables or brute force).
+
+## Installation
+
+	composer install birke/rememberme
+
+## Usage example
+See the `example` directory for an example.
 
 [1]: http://jaspan.com/improved%5Fpersistent%5Flogin%5Fcookie%5Fbest%5Fpractice
 
