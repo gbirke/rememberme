@@ -30,7 +30,7 @@ class Cookie {
     return $this->path;
   }
 
-  public function setPath(string $path) {
+  public function setPath($path) {
     $this->path = $path;
   }
 
