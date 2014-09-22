@@ -62,6 +62,7 @@ class Authenticator {
       case Storage\StorageInterface::TRIPLET_FOUND:
         $expire = time() + $this->expireTime;
         $newToken = $this->createToken();
+        $this->storage->cleanTriplet($cookieValues[0], $cookieValues[2].$this->salt);
         $this->storage->storeTriplet($cookieValues[0], $newToken.$this->salt, $cookieValues[2].$this->salt, $expire);
         $this->cookie->setCookie($this->cookieName, implode("|", array($cookieValues[0],$newToken, $cookieValues[2])), $expire);
         $loginResult = $cookieValues[0];
