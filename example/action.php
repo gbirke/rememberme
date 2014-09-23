@@ -56,7 +56,7 @@ if(!empty($_SESSION['username'])) {
 
   // Check, if the Rememberme cookie exists and is still valid.
   // If not, we log out the current session
-  if(!empty($_COOKIE[$rememberMe->getCookieName()]) && !$rememberMe->cookieIsValid($_SESSION['username'])) {
+  if(!empty($_COOKIE[$rememberMe->getCookieName()]) && !$rememberMe->cookieIsValid()) {
     redirect(true);
   }
 
