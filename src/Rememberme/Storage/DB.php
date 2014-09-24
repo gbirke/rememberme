@@ -1,7 +1,4 @@
 <?php
-/* 
- * 
- */
 
 namespace Birke\Rememberme\Storage;
 
@@ -11,93 +8,138 @@ namespace Birke\Rememberme\Storage;
  *
  * @author Gabriel Birke
  */
-abstract class DB implements StorageInterface {
-  
-  /**
-   *
-   * @var string
-   */
-  protected $tableName = "";
+abstract class DB implements StorageInterface
+{
+    /**
+     *
+     * @var string
+     */
+    protected $tableName = "";
 
-  /**
-   *
-   * @var string
-   */
-  protected $credentialColumn = "";
+    /**
+     *
+     * @var string
+     */
+    protected $credentialColumn = "";
 
-  /**
-   *
-   * @var string
-   */
-  protected $tokenColumn = "";
+    /**
+     *
+     * @var string
+     */
+    protected $tokenColumn = "";
 
-  /**
-   *
-   * @var string
-   */
-  protected $persistentTokenColumn = "";
+    /**
+     *
+     * @var string
+     */
+    protected $persistentTokenColumn = "";
 
-  /**
-   *
-   * @var string
-   */
-  protected $expiresColumn = "";
+    /**
+     *
+     * @var string
+     */
+    protected $expiresColumn = "";
 
-  public function __construct($options) {
-    foreach($options as $prop => $value) {
-      $setter = "set".ucfirst($prop);
-      if(method_exists($this, $setter)) {
-        $this->$setter($value);
-      }
+    /**
+     * @param $options
+     */
+    public function __construct($options)
+    {
+        foreach ($options as $prop => $value) {
+            $setter = "set" . ucfirst($prop);
+            if (method_exists($this, $setter)) {
+                $this->$setter($value);
+            }
+        }
     }
-  }
 
-  public function getTableName() {
-    return $this->tableName;
-  }
+    /**
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
 
-  public function setTableName($tableName) {
-    $this->tableName = $tableName;
-    return $this;
-  }
+    /**
+     * @param $tableName
+     * @return $this
+     */
+    public function setTableName($tableName)
+    {
+        $this->tableName = $tableName;
+        return $this;
+    }
 
-  public function getCredentialColumn() {
-    return $this->credentialColumn;
-  }
+    /**
+     * @return string
+     */
+    public function getCredentialColumn()
+    {
+        return $this->credentialColumn;
+    }
 
-  public function setCredentialColumn($credentialColumn) {
-    $this->credentialColumn = $credentialColumn;
-    return $this;
-  }
+    /**
+     * @param $credentialColumn
+     * @return $this
+     */
+    public function setCredentialColumn($credentialColumn)
+    {
+        $this->credentialColumn = $credentialColumn;
+        return $this;
+    }
 
-  public function getTokenColumn() {
-    return $this->tokenColumn;
-  }
+    /**
+     * @return string
+     */
+    public function getTokenColumn()
+    {
+        return $this->tokenColumn;
+    }
 
-  public function setTokenColumn($tokenColumn) {
-    $this->tokenColumn = $tokenColumn;
-    return $this;
-  }
+    /**
+     * @param $tokenColumn
+     * @return $this
+     */
+    public function setTokenColumn($tokenColumn)
+    {
+        $this->tokenColumn = $tokenColumn;
+        return $this;
+    }
 
-  public function getPersistentTokenColumn() {
-    return $this->persistentTokenColumn;
-  }
+    /**
+     * @return string
+     */
+    public function getPersistentTokenColumn()
+    {
+        return $this->persistentTokenColumn;
+    }
 
-  public function setPersistentTokenColumn($persistentTokenColumn) {
-    $this->persistentTokenColumn = $persistentTokenColumn;
-    return $this;
-  }
+    /**
+     * @param $persistentTokenColumn
+     * @return $this
+     */
+    public function setPersistentTokenColumn($persistentTokenColumn)
+    {
+        $this->persistentTokenColumn = $persistentTokenColumn;
+        return $this;
+    }
 
-  public function getExpiresColumn() {
-    return $this->expiresColumn;
-  }
+    /**
+     * @return string
+     */
+    public function getExpiresColumn()
+    {
+        return $this->expiresColumn;
+    }
 
-  public function setExpiresColumn($expiresColumn) {
-    $this->expiresColumn = $expiresColumn;
-    return $this;
-  }
-
-
-
+    /**
+     * @param $expiresColumn
+     * @return $this
+     */
+    public function setExpiresColumn($expiresColumn)
+    {
+        $this->expiresColumn = $expiresColumn;
+        return $this;
+    }
 }
-?>
