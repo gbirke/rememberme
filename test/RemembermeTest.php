@@ -88,14 +88,14 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->rememberme->login();
   }
 
-  public function testStoreNewTripletInStorageIfTripletIsFound() {
+  public function testReplaceTripletInStorageIfTripletIsFound() {
     $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
       $this->userid, $this->validToken, $this->validPersistentToken));
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
     $this->storage->expects($this->once())
-      ->method("storeTriplet")
+      ->method("replaceTriplet")
       ->with(
         $this->equalTo($this->userid),
         $this->logicalAnd(
@@ -259,7 +259,7 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
       ->with($this->equalTo($this->userid), $this->equalTo($this->validToken.$salt), $this->equalTo($this->validPersistentToken.$salt))
       ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
     $this->storage->expects($this->once())
-      ->method("storeTriplet")
+      ->method("replaceTriplet")
       ->with(
         $this->equalTo($this->userid), 
         $this->matchesRegularExpression('/^[a-f0-9]{32,}'.preg_quote($salt)."$/"), 

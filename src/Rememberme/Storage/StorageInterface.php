@@ -36,6 +36,14 @@ interface StorageInterface
      */
     public function storeTriplet($credential, $token, $persistentToken, $expire = 0);
 
+    /**
+     * Replace current token after successful authentication
+     * @param $credential
+     * @param $token
+     * @param $persistentToken
+     * @param int $expire
+     */
+    public function replaceTriplet($credential, $token, $persistentToken, $expire = 0);
 
     /**
      * Remove one triplet of the user from the store
