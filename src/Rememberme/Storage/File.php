@@ -85,6 +85,19 @@ class File implements StorageInterface
     }
 
     /**
+     * Replace current token after successful authentication
+     * @param $credential
+     * @param $token
+     * @param $persistentToken
+     * @param int $expire
+     */
+    public function replaceTriplet($credential, $token, $persistentToken, $expire = 0)
+    {
+        $this->cleanTriplet($credential, $persistentToken);
+        $this->storeTriplet($credential, $token, $persistentToken, $expire);
+    }
+
+    /**
      * @param $credential
      */
     public function cleanAllTriplets($credential)

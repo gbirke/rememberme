@@ -72,6 +72,27 @@ class PDO extends DB
     }
 
     /**
+     * Replace current token after successful authentication
+     * @param $credential
+     * @param $token
+     * @param $persistentToken
+     * @param int $expire
+     */
+    public function replaceTriplet($credential, $token, $persistentToken, $expire = 0)
+    {
+        try {
+            $this->connection->beginTransaction();
+            $this->cleanTriplet($credential, $persistentToken);
+            $this->storeTriplet($credential, $token, $persistentToken, $expire);
+            $this->connection->commit();
+        }
+        catch (\PDOException $e) {
+            $this->connection->rollBack();
+            throw $e;
+        }
+    }
+
+    /**
      * @param $credential
      */
     public function cleanAllTriplets($credential)
