@@ -114,7 +114,7 @@ class PDO extends DB
     /**
      * @param PDO $connection
      */
-    public function setConnection(PDO $connection)
+    public function setConnection(\PDO $connection)
     {
         $this->connection = $connection;
     }
