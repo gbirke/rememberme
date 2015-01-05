@@ -22,7 +22,7 @@ against the following attack scenarios:
 
 ## Installation
 
-	composer install birke/rememberme
+	composer require birke/rememberme
 
 ## Usage example
 See the `example` directory for an example.
