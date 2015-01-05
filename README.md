@@ -32,8 +32,9 @@ The generated tokens are pseudo-random and the storage classes use the SHA1 algo
 to hash them. If you need better security than that, overwrite the
 `Authenticator::generateToken` method to generate a truly random token. If you are
 using PHP >=5.5 you can use the "[password_hash][2]" and "[password_verify][3]" functions.
-On lower PHP versions you could use the userland implementations of these functions.
+On lower PHP versions you could use the [userland implementations][4] of these functions.
 
 [1]: http://jaspan.com/improved%5Fpersistent%5Flogin%5Fcookie%5Fbest%5Fpractice
 [2]: http://www.php.net/manual/en/function.password-hash.php
 [3]: http://www.php.net/manual/en/function.password-verify.php
+[4]: https://github.com/ircmaxell/password_compat
