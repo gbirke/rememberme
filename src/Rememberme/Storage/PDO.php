@@ -26,7 +26,7 @@ class PDO extends DB
         // proper XML test data
         $sql = "SELECT IF(SHA1(?) = {$this->tokenColumn}, 1, -1) AS token_match " .
             "FROM {$this->tableName} WHERE {$this->credentialColumn} = ? " .
-            "AND {$this->persistentTokenColumn} = SHA1(?) LIMIT 1 AND {$this->expiresColumn} > NOW()";
+            "AND {$this->persistentTokenColumn} = SHA1(?) AND {$this->expiresColumn} > NOW() LIMIT 1";
 
         $query = $this->connection->prepare($sql);
         $query->execute(array($token, $credential, $persistentToken));
