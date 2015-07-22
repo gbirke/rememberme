@@ -2,6 +2,9 @@
 
 namespace Birke\Rememberme;
 
+use Birke\Rememberme\Token\DefaultToken;
+use Birke\Rememberme\Token\TokenInterface;
+
 class Authenticator
 {
     /**
@@ -18,6 +21,11 @@ class Authenticator
      * @var Storage\StorageInterface
      */
     protected $storage;
+
+    /**
+     * @var Token\TokenInterface
+     */
+    protected $tokenGenerator;
 
     /**
      * Number of seconds in the future the cookie and storage will expire (defaults to 1 week)
@@ -47,10 +55,14 @@ class Authenticator
     /**
      * @param Storage\StorageInterface $storage
      */
-    public function __construct(Storage\StorageInterface $storage)
+    public function __construct(Storage\StorageInterface $storage, TokenInterface $tokenGenerator = null)
     {
         $this->storage = $storage;
         $this->cookie = new Cookie();
+        if ( is_null($tokenGenerator) ) {
+            $tokenGenerator = new DefaultToken();
+        }
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
@@ -71,7 +83,7 @@ class Authenticator
 
             case Storage\StorageInterface::TRIPLET_FOUND:
                 $expire = time() + $this->expireTime;
-                $newToken = $this->createToken();
+                $newToken = $this->tokenGenerator->createToken();
                 $this->storage->replaceTriplet($cookieValues[0], $newToken . $this->salt, $cookieValues[2] . $this->salt, $expire);
                 $this->cookie->setCookie($this->cookieName, implode("|", array($cookieValues[0], $newToken, $cookieValues[2])), $expire);
                 $loginResult = $cookieValues[0];
@@ -111,8 +123,8 @@ class Authenticator
      */
     public function createCookie($credential)
     {
-        $newToken = $this->createToken();
-        $newPersistentToken = $this->createToken();
+        $newToken = $this->tokenGenerator->createToken();
+        $newPersistentToken = $this->tokenGenerator->createToken();
 
         $expire = time() + $this->expireTime;
 
@@ -216,16 +228,6 @@ class Authenticator
     }
 
     /**
-     * Create a pseudo-random token.
-     *
-     * The token is pseudo-random. If you need better security, read from /dev/urandom
-     */
-    protected function createToken()
-    {
-        return bin2hex(random_bytes(32));
-    }
-
-    /**
      * @return array
      */
     protected function getCookieValues()
@@ -278,12 +280,12 @@ class Authenticator
 
     /**
      * The salt is additional information that is added to the tokens to make
-     * them more unqiue and secure. The salt is not stored in the cookie and
-     * should not saved in the storage.
+     * them more unique and secure. The salt is not stored in the cookie and
+     * should not be saved in the storage.
      *
      * For example, to bind a token to an IP address use $_SERVER['REMOTE_ADDR'].
      * To bind a token to the browser (user agent), use $_SERVER['HTTP_USER_AGENT].
-     * You could also use a long random string that is uniqe to your application.
+     * You could also use a long random string that is unique to your application.
      * @param string $salt
      */
     public function setSalt($salt)

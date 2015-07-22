@@ -27,14 +27,24 @@ against the following attack scenarios:
 ## Usage example
 See the `example` directory for an example.
 
-## Improving security
-The generated tokens are pseudo-random and the storage classes use the SHA1 algorithm
-to hash them. If you need better security than that, overwrite the
-`Authenticator::generateToken` method to generate a truly random token. If you are
-using PHP >=5.5 you can use the "[password_hash][2]" and "[password_verify][3]" functions.
-On lower PHP versions you could use the [userland implementations][4] of these functions.
+## Token security
+This library uses the [`openssl_random_pseudo_bytes`][2] function by default to generate a 16-byte token 
+(a 32 char hexadecimal string). That should be sufficiently secure for more applications.
 
+If you need more security, instantiate the `Authenticator` class with a custom token generator.
+The following example generates Base64-encoded tokens with 128 characters:
+ 
+ ```php
+ $tokenGenerator = new DefaultToken(94, DefaultToken::FORMAT_BASE64);
+ $auth = new Authenticator($storage, $tokenGenerator);
+ ```
+ 
+ On systems without `openssl_random_pseudo_bytes` or with really good other entropy sources,
+ have a look at the [RandomLib][3]. Rememberme has a `RandomLibToken` class that can use it.
+ 
+ For legacy systems that update to version 2 of this library and where logging out all users
+ would be catastrophic, you can use the `ClassicToken` class.
+ 
 [1]: http://jaspan.com/improved%5Fpersistent%5Flogin%5Fcookie%5Fbest%5Fpractice
-[2]: http://www.php.net/manual/en/function.password-hash.php
-[3]: http://www.php.net/manual/en/function.password-verify.php
-[4]: https://github.com/ircmaxell/password_compat
+[2]: http://www.php.net/manual/en/function.openssl-random-pseudo-bytes.php
+[3]: https://github.com/ircmaxell/RandomLib
