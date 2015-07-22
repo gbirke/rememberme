@@ -2,8 +2,8 @@
 /**
  * This file demonstrates how to use the Rememberme library.
  *
- * Some code (autoload, templating) is just simple boilerplate and no shining
- * example of how to write php applications.
+ * This code is just a very concise way of demonstrating the library features.
+ * Don't do action dispatch and templating like this in production!
  *
  * @author Gabriel Birke
  */
