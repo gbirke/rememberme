@@ -1,4 +1,6 @@
 .idea
 nbproject
-example/tokens
+
+example/tokens/
+
 /vendor/
