@@ -13,7 +13,7 @@
     ],
     "minimum-stability": "stable",
     "autoload": {
-        "psr-4": {"Birke\\": "src/"}
+        "psr-4": {"Birke\\Rememberme\\": "src/"}
     },
     "require": {
         "paragonie/random_compat": "^1.1.4"
