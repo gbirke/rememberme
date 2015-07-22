@@ -20,7 +20,7 @@
   <li>Copy the cookie value from above into the clipboard.</li>
   <li>Quit Chrome to end the session.</li>
   <li>Start Firefox and install the <a href="https://addons.mozilla.org/de/firefox/addon/6683/">Firecookie</a> extension if needed.</li>
-  <li>Show this page. If you see this text, log out. You should see the login form.</li>
+  <li>Show this example page in Firefox. You should see the login form. If you see this text, log out.</li>
   <li>Create the <code>PHP_REMEMBERME</code> cookie with the value you copied.</li>
   <li>Refresh the page - you are now logged in and should see this text. You have stolen the login credential from Chrome!</li>
   <li>Start Chrome and try to show this page - you should get a warning instead of the login dialog.</li>
