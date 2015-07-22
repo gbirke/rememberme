@@ -42,8 +42,14 @@ The following example generates Base64-encoded tokens with 128 characters:
  On systems without `openssl_random_pseudo_bytes` or with really good other entropy sources,
  have a look at the [RandomLib][3]. Rememberme has a `RandomLibToken` class that can use it.
  
- For legacy systems that update to version 2 of this library and where logging out all users
- would be catastrophic, you can use the `ClassicToken` class.
+## Updating from Version 1.x
+If you did subclass `Authenticator` with a custom `createToken` method, you need to
+implement your token generation in a custom class and pass it as a constructor argument.
+Otherwise, there is nothing to do when updating.
+
+The insecure pseudo-random tokens of the old version will be replaced by more secure
+tokens whenever a login occurs. For better security (and less convenience of your users)
+you could completely clear your token storage once after updating.
  
 [1]: http://jaspan.com/improved%5Fpersistent%5Flogin%5Fcookie%5Fbest%5Fpractice
 [2]: http://www.php.net/manual/en/function.openssl-random-pseudo-bytes.php
