@@ -39,8 +39,8 @@ The following example generates Base64-encoded tokens with 128 characters:
  $auth = new Authenticator($storage, $tokenGenerator);
  ```
  
- On systems without `openssl_random_pseudo_bytes` or with really good other entropy sources,
- have a look at the [RandomLib][3]. Rememberme has a `RandomLibToken` class that can use it.
+On systems without `openssl_random_pseudo_bytes` or with really good other entropy sources,
+have a look at the [RandomLib][3]. Rememberme has a `RandomLibToken` class that can use it.
  
 ## Updating from Version 1.x
 If you did subclass `Authenticator` with a custom `createToken` method, you need to
