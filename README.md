@@ -44,10 +44,10 @@ have a look at the [RandomLib][3]. Rememberme has a `RandomLibToken` class that 
  
 ## Updating from Version 1.x
 If you did subclass `Authenticator` with a custom `createToken` method, you need to
-implement your token generation in a custom class and pass it as a constructor argument.
-Otherwise, there is nothing to do when updating.
+implement your token generation in a custom class that implements `TokenInterface` 
+and pass it as a constructor argument. Otherwise, there is nothing to do when updating.
 
-The insecure pseudo-random tokens of the old version will be replaced by more secure
+The less secure pseudo-random tokens of the old version will be replaced by more secure
 tokens whenever a login occurs. For better security (and less convenience of your users)
 you could completely clear your token storage once after updating.
  
