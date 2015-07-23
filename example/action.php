@@ -56,7 +56,11 @@ if(!empty($_SESSION['username'])) {
 
   // Check, if the Rememberme cookie exists and is still valid.
   // If not, we log out the current session
+  // This state can happen in two cases:
+  // a) The cookie is invalid because the triples were cleared after an attack or a "global logout"
+  // b) The cookie is invalid because the triples have expired
   if(!empty($_COOKIE[$rememberMe->getCookieName()]) && !$rememberMe->cookieIsValid()) {
+    $rememberMe->clearCookie();
     redirect(true);
   }
 
