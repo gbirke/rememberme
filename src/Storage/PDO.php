@@ -104,6 +104,21 @@ class PDO extends DB
     }
 
     /**
+     * Remove all expired triplets of all users.
+     *
+     * @param int $expiryTime Timestamp, all tokens before this time will be deleted
+     * @return void
+     */
+    public function cleanExpiredTokens($expiryTime)
+    {
+        $sql = "DELETE FROM {$this->tableName} WHERE {$this->expiresColumn} < ? ";
+
+        $query = $this->connection->prepare($sql);
+        $query->execute(array(date("Y-m-d H:i:s", $expiryTime)));
+    }
+
+
+    /**
      * @return \PDO
      */
     public function getConnection()

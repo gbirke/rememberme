@@ -47,6 +47,16 @@ class Authenticator
     protected $cleanStoredTokensOnInvalidResult = true;
 
     /**
+     * Always clean expired tokens of users when login is called.
+     *
+     * Disabled by default for performance reasons, but useful for
+     * hosted systems that can't run periodic scripts.
+     *
+     * @var bool
+     */
+    protected $cleanExpiredTokensOnLogin = false;
+
+    /**
      * Additional salt to add more entropy when the tokens are stored as hashes.
      * @var string
      */
@@ -78,6 +88,9 @@ class Authenticator
         }
 
         $loginResult = false;
+        if ($this->cleanExpiredTokensOnLogin) {
+            $this->storage->cleanExpiredTokens(time() - $this->expireTime);
+        }
 
         switch ($this->storage->findTriplet($cookieValues[0], $cookieValues[1] . $this->salt, $cookieValues[2] . $this->salt)) {
 
@@ -163,6 +176,11 @@ class Authenticator
         $this->storage->cleanTriplet($cookieValues[0], $cookieValues[2] . $this->salt);
 
         return true;
+    }
+
+    protected function expireIfNeeded()
+    {
+
     }
 
     /**
@@ -291,5 +309,21 @@ class Authenticator
     public function setSalt($salt)
     {
         $this->salt = $salt;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isCleanExpiredTokensOnLogin()
+    {
+        return $this->cleanExpiredTokensOnLogin;
+    }
+
+    /**
+     * @param boolean $cleanExpiredTokensOnLogin
+     */
+    public function setCleanExpiredTokensOnLogin($cleanExpiredTokensOnLogin)
+    {
+        $this->cleanExpiredTokensOnLogin = $cleanExpiredTokensOnLogin;
     }
 }

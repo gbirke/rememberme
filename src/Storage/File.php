@@ -60,7 +60,7 @@ class File implements StorageInterface
      * @param int $expire
      * @return $this
      */
-    public function storeTriplet($credential, $token, $persistentToken, $expire = 0)
+    public function storeTriplet($credential, $token, $persistentToken, $expire)
     {
         // Hash the tokens, because they can contain a salt and can be accessed in the file system
         $persistentToken = sha1($persistentToken);
@@ -91,7 +91,7 @@ class File implements StorageInterface
      * @param $persistentToken
      * @param int $expire
      */
-    public function replaceTriplet($credential, $token, $persistentToken, $expire = 0)
+    public function replaceTriplet($credential, $token, $persistentToken, $expire)
     {
         $this->cleanTriplet($credential, $persistentToken);
         $this->storeTriplet($credential, $token, $persistentToken, $expire);
@@ -116,4 +116,21 @@ class File implements StorageInterface
     {
         return $this->path . DIRECTORY_SEPARATOR . $credential . "." . $persistentToken . $this->suffix;
     }
+
+    /**
+     * Remove all expired triplets of all users.
+     *
+     * @param int $expiryTime Timestamp, all tokens before this time will be deleted
+     * @return void
+     */
+    public function cleanExpiredTokens($expiryTime)
+    {
+        foreach (glob($this->path . DIRECTORY_SEPARATOR . "*" . $this->suffix) as $file) {
+            if (filemtime($file) < $expiryTime) {
+                unlink($file);
+            }
+        }
+    }
+
+
 }
