@@ -45,7 +45,7 @@ session_start();
 
 if(!empty($_SESSION['username'])) {
   if(!empty($_GET['logout'])) {
-    $rememberMe->clearCookie($_SESSION['username']);
+    $rememberMe->clearCookie();
     redirect(true);
   }
 

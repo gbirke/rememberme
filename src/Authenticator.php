@@ -151,24 +151,19 @@ class Authenticator
     /**
      * Expire the rememberme cookie, unset $_COOKIE[$this->cookieName] value and
      * remove current login triplet from storage.
-     * @param boolean $clearFromStorage
      * @return boolean
      */
-    public function clearCookie($clearFromStorage = true)
+    public function clearCookie()
     {
         if (empty($_COOKIE[$this->cookieName])) {
             return false;
         }
 
-        $cookieValues = explode("|", $_COOKIE[$this->cookieName], 3);
+        $cookieValues = $this->getCookieValues();
 
         $this->cookie->setCookie($this->cookieName, "", time() - $this->expireTime);
 
         unset($_COOKIE[$this->cookieName]);
-
-        if (!$clearFromStorage) {
-            return true;
-        }
 
         if (count($cookieValues) < 3) {
             return false;
