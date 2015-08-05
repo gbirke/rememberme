@@ -64,6 +64,7 @@ class Authenticator
 
     /**
      * @param Storage\StorageInterface $storage
+     * @param TokenInterface $tokenGenerator
      */
     public function __construct(Storage\StorageInterface $storage, TokenInterface $tokenGenerator = null)
     {
