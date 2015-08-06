@@ -19,7 +19,8 @@
         "paragonie/random_compat": "^1.1.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7"
+        "phpunit/phpunit": "^5.7",
+        "ircmaxell/random-lib": "1.0.*@dev",
         "escapestudios/symfony2-coding-standard": "~2.0"
     },
     "suggest": {

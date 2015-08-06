@@ -4,6 +4,15 @@ use Birke\Rememberme\Token\RandomLibToken;
 
 class RandomLibTokenTest extends PHPUnit_Framework_TestCase {
 
+    protected function setUp()
+    {
+        if (!class_exists('RandomLib\Factory')) {
+            $this->markTestSkipped(
+                'The RandomLib library is not available.'
+            );
+        }
+    }
+
     public function testRandomLibTokenReturns32CharsInHexadecimal(){
         $token = new RandomLibToken();
         $this->assertRegExp("/^[\\da-f]{32}$/", $token->createToken());
