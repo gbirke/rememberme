@@ -2,18 +2,16 @@
 
 namespace Birke\Rememberme;
 
+use Birke\Rememberme\Cookie\CookieInterface;
+use Birke\Rememberme\Cookie\PHPCookie;
 use Birke\Rememberme\Token\DefaultToken;
 use Birke\Rememberme\Token\TokenInterface;
 
 class Authenticator
 {
-    /**
-     * @var string
-     */
-    protected $cookieName = "PHP_REMEMBERME";
 
     /**
-     * @var Cookie
+     * @var Cookie\CookieInterface
      */
     protected $cookie;
 
@@ -28,7 +26,7 @@ class Authenticator
     protected $tokenGenerator;
 
     /**
-     * Number of seconds in the future the cookie and storage will expire (defaults to 1 week)
+     * Number of seconds in the future tokens in the storage will expire (defaults to 1 week)
      * @var int
      */
     protected $expireTime = 604800;
@@ -65,14 +63,19 @@ class Authenticator
     /**
      * @param Storage\StorageInterface $storage
      * @param TokenInterface $tokenGenerator
+     * @param Cookie\CookieInterface $cookie
      */
-    public function __construct(Storage\StorageInterface $storage, TokenInterface $tokenGenerator = null)
+    public function __construct(Storage\StorageInterface $storage, TokenInterface $tokenGenerator = null,
+                                Cookie\CookieInterface $cookie=null)
     {
-        $this->storage = $storage;
-        $this->cookie = new Cookie();
         if ( is_null($tokenGenerator) ) {
             $tokenGenerator = new DefaultToken();
         }
+        if ( is_null($cookie) ) {
+            $cookie = new PHPCookie();
+        }
+        $this->storage = $storage;
+        $this->cookie = $cookie;
         $this->tokenGenerator = $tokenGenerator;
     }
 
@@ -99,12 +102,12 @@ class Authenticator
                 $expire = time() + $this->expireTime;
                 $newToken = $this->tokenGenerator->createToken();
                 $this->storage->replaceTriplet($cookieValues[0], $newToken . $this->salt, $cookieValues[2] . $this->salt, $expire);
-                $this->cookie->setCookie($this->cookieName, implode("|", array($cookieValues[0], $newToken, $cookieValues[2])), $expire);
+                $this->cookie->setValue(implode("|", array($cookieValues[0], $newToken, $cookieValues[2])));
                 $loginResult = $cookieValues[0];
                 break;
 
             case Storage\StorageInterface::TRIPLET_INVALID:
-                $this->cookie->setCookie($this->cookieName, "", time() - $this->expireTime);
+                $this->cookie->deleteCookie();
                 $this->lastLoginTokenWasInvalid = true;
 
                 if ($this->cleanStoredTokensOnInvalidResult) {
@@ -143,7 +146,7 @@ class Authenticator
         $expire = time() + $this->expireTime;
 
         $this->storage->storeTriplet($credential, $newToken . $this->salt, $newPersistentToken . $this->salt, $expire);
-        $this->cookie->setCookie($this->cookieName, implode("|", array($credential, $newToken, $newPersistentToken)), $expire);
+        $this->cookie->setValue(implode("|", array($credential, $newToken, $newPersistentToken)));
 
         return $this;
     }
@@ -155,15 +158,10 @@ class Authenticator
      */
     public function clearCookie()
     {
-        if (empty($_COOKIE[$this->cookieName])) {
-            return false;
-        }
 
         $cookieValues = $this->getCookieValues();
 
-        $this->cookie->setCookie($this->cookieName, "", time() - $this->expireTime);
-
-        unset($_COOKIE[$this->cookieName]);
+        $this->cookie->deleteCookie();
 
         if (count($cookieValues) < 3) {
             return false;
@@ -180,28 +178,10 @@ class Authenticator
     }
 
     /**
-     * @return string
-     */
-    public function getCookieName()
-    {
-        return $this->cookieName;
-    }
-
-    /**
-     * @param $name
+     * @param CookieInterface $cookie
      * @return $this
      */
-    public function setCookieName($name)
-    {
-        $this->cookieName = $name;
-        return $this;
-    }
-
-    /**
-     * @param Cookie $cookie
-     * @return $this
-     */
-    public function setCookie(Cookie $cookie)
+    public function setCookie(CookieInterface $cookie)
     {
         $this->cookie = $cookie;
         return $this;
@@ -216,7 +196,7 @@ class Authenticator
     }
 
     /**
-     * @return Cookie
+     * @return CookieInterface
      */
     public function getCookie()
     {
@@ -246,12 +226,8 @@ class Authenticator
      */
     protected function getCookieValues()
     {
-        // Cookie was not sent with incoming request
-        if (empty($_COOKIE[$this->cookieName])) {
-            return array();
-        }
 
-        $cookieValues = explode("|", $_COOKIE[$this->cookieName], 3);
+        $cookieValues = explode("|", $this->cookie->getValue(), 3);
 
         if (count($cookieValues) < 3) {
             return array();

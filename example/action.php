@@ -59,7 +59,7 @@ if(!empty($_SESSION['username'])) {
   // This state can happen in two cases:
   // a) The cookie is invalid because the triples were cleared after an attack or a "global logout"
   // b) The cookie is invalid because the triples have expired
-  if(!empty($_COOKIE[$rememberMe->getCookieName()]) && !$rememberMe->cookieIsValid()) {
+  if(!$rememberMe->cookieIsValid()) {
     $rememberMe->clearCookie();
     redirect(true);
   }

@@ -1,5 +1,8 @@
 <?php
 
+use Birke\Rememberme\Cookie\CookieInterface;
+use Birke\Rememberme\Storage\StorageInterface;
+
 class RemembermeTest extends PHPUnit_Framework_TestCase
 {
   /**
@@ -23,10 +26,10 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   protected $storage;
 
   function setUp() {
-    $this->storage = $this->getMockBuilder(\Birke\Rememberme\Storage\StorageInterface::class)->getMock();
+    $this->storage = $this->getMockBuilder(StorageInterface::class)->getMock();
     $this->rememberme = new Birke\Rememberme\Authenticator($this->storage);
 
-    $this->cookie = $this->getMockBuilder(\Birke\Rememberme\Cookie::class)->setMethods(['setcookie'])->getMock();
+    $this->cookie = $this->getMock(CookieInterface::class, array("setValue", "getValue", "deleteCookie"));
 
     $this->rememberme->setCookie($this->cookie);
 
@@ -42,15 +45,18 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
   public function testReturnFalseIfCookieIsInvalid()
   {
-    $_COOKIE = array($this->rememberme->getCookieName() => "DUMMY");
+    $this->cookie->method("getValue")->willReturn("DUMMY");
     $this->assertFalse($this->rememberme->login());
-    $_COOKIE = array($this->rememberme->getCookieName() => $this->userid."|a");
+      $this->cookie->method("getValue")->willReturn($this->userid."|a");
     $this->assertFalse($this->rememberme->login());
   }
 
   public function testLoginTriesToFindTripletWithValuesFromCookie() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+          $this->userid,
+          $this->validToken,
+          $this->validPersistentToken
+    ))) ;
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->with($this->equalTo($this->userid), $this->equalTo($this->validToken), $this->equalTo($this->validPersistentToken));
@@ -60,8 +66,11 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   /* Success cases */
 
   public function testReturnTrueIfTripletIsFound() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+          $this->userid,
+          $this->validToken,
+          $this->validPersistentToken
+      )));
 
     $this->storage->expects($this->once())
       ->method("findTriplet")
@@ -72,14 +81,13 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   public function testStoreNewTripletInCookieIfTripletIsFound() {
     $oldcookieValue = implode("|", array(
       $this->userid, $this->validToken, $this->validPersistentToken));
-    $_COOKIE[$this->rememberme->getCookieName()] = $oldcookieValue;
+    $this->cookie->method("getValue")->willReturn($oldcookieValue);
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
-      ->method("setcookie")
+      ->method("setValue")
       ->with(
-        $this->anything(),
         $this->logicalAnd(
           $this->matchesRegularExpression('/^'.$this->userid.'\|[a-f0-9]{32,}\|'.$this->validPersistentToken.'$/'),
           $this->logicalNot($this->equalTo($oldcookieValue))
@@ -89,8 +97,11 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   }
 
   public function testReplaceTripletInStorageIfTripletIsFound() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+          $this->userid,
+          $this->validToken,
+          $this->validPersistentToken
+    )));
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
@@ -109,14 +120,17 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
   public function testCookieContainsUserIDAndHexTokensIfTripletIsFound()
   {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+          $this->userid,
+          $this->validToken,
+          $this->validPersistentToken
+      )));
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
-      ->method("setcookie")
-      ->with($this->anything(),
+      ->method("setValue")
+      ->with(
           $this->matchesRegularExpression('/^'.$this->userid.'\|[a-f0-9]{32,}\|[a-f0-9]{32,}$/')
         );
     $this->rememberme->login();
@@ -124,15 +138,15 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
   public function testCookieContainsNewTokenIfTripletIsFound()
   {
-    $oldcookieValue = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
-    $_COOKIE[$this->rememberme->getCookieName()] = $oldcookieValue;
+      $oldcookieValue = implode("|", array(
+        $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( $oldcookieValue );
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
     $this->cookie->expects($this->once())
-      ->method("setcookie")
-      ->with($this->anything(),
+      ->method("setValue")
+      ->with(
           $this->logicalAnd(
             $this->matchesRegularExpression('/^'.$this->userid.'\|[a-f0-9]{32,}\|'.$this->validPersistentToken.'$/'),
             $this->logicalNot($this->equalTo($oldcookieValue))
@@ -141,26 +155,11 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->rememberme->login();
   }
 
-  public function testCookieExpiryIsInTheFutureIfTripletIsFound()
-  {
-    $oldcookieValue = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
-    $_COOKIE[$this->rememberme->getCookieName()] = $oldcookieValue;
-    $now = time();
-    $this->storage->expects($this->once())
-      ->method("findTriplet")
-      ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
-    $this->cookie->expects($this->once())
-      ->method("setcookie")
-      ->with($this->anything(), $this->anything(), $this->greaterThan($now));
-    $this->rememberme->login();
-  }
-
   /* Failure Cases */
 
   public function testFalseIfTripletIsNotFound() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->validToken, $this->validPersistentToken)));
 
     $this->storage->expects($this->once())
       ->method("findTriplet")
@@ -169,8 +168,8 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   }
 
   public function testFalseIfTripletIsInvalid() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->invalidToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->invalidToken, $this->validPersistentToken)));
 
     $this->storage->expects($this->once())
       ->method("findTriplet")
@@ -179,21 +178,20 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   }
 
   public function testCookieIsExpiredIfTripletIsInvalid() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->invalidToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->invalidToken, $this->validPersistentToken)));
     $now = time();
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_INVALID));
     $this->cookie->expects($this->once())
-      ->method("setcookie")
-      ->with($this->anything(), $this->anything(), $this->lessThan($now));
+      ->method("deleteCookie");
     $this->rememberme->login();
   }
 
   public function testAllStoredTokensAreClearedIfTripletIsInvalid() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->invalidToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->invalidToken, $this->validPersistentToken)));
     $this->storage->expects($this->any())
       ->method("findTriplet")
       ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_INVALID));
@@ -207,8 +205,8 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   }
 
   public function testInvalidTripletStateIsStored() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->invalidToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->invalidToken, $this->validPersistentToken)));
 
     $this->storage->expects($this->once())
       ->method("findTriplet")
@@ -218,42 +216,12 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->assertTrue($this->rememberme->loginTokenWasInvalid());
   }
 
-  /* Cookie tests */
-
-  public function testCookieNameCanBeSet() {
-    $cookieName = "myCustomName";
-    $this->rememberme->setCookieName($cookieName);
-    $_COOKIE[$cookieName] = implode("|", array($this->userid, $this->validToken, $this->validPersistentToken));
-    $this->storage->expects($this->once())
-      ->method("findTriplet")
-      ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
-    $this->cookie->expects($this->once())
-      ->method("setcookie")
-      ->with($this->equalTo($cookieName));
-    $this->assertEquals($this->userid, $this->rememberme->login());
-  }
-
-  public function testCookieIsSetToConfiguredExpiryDate() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
-    $now = time();
-    $expireTime = 31556926; // 1 year
-    $this->rememberme->setExpireTime($expireTime);
-    $this->storage->expects($this->once())
-      ->method("findTriplet")
-      ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
-    $this->cookie->expects($this->once())
-      ->method("setcookie")
-      ->with($this->anything(), $this->anything(), $this->equalTo($now+$expireTime, 10));
-    $this->rememberme->login();
-  }
-
   /* Salting test */
 
   public function testSaltIsAddedToTokensOnLogin() {
     $salt = "Mozilla Firefox 4.0";
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->validToken, $this->validPersistentToken)));
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->with($this->equalTo($this->userid), $this->equalTo($this->validToken.$salt), $this->equalTo($this->validPersistentToken.$salt))
@@ -271,8 +239,8 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
   public function testSaltIsAddedToTokensOnCookieIsValid() {
     $salt = "Mozilla Firefox 4.0";
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->validToken, $this->validPersistentToken)));
     $this->storage->expects($this->once())
       ->method("findTriplet")
       ->with($this->equalTo($this->userid), $this->equalTo($this->validToken.$salt), $this->equalTo($this->validPersistentToken.$salt));
@@ -296,8 +264,8 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
 
   public function testSaltIsAddedToTokensOnClearCookie() {
     $salt = "Mozilla Firefox 4.0";
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->validToken, $this->validPersistentToken)));
     $this->storage->expects($this->once())
       ->method("cleanTriplet")
       ->with(
@@ -313,11 +281,9 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   public function testCreateCookieCreatesCookieAndStoresTriplets() {
     $now = time();
     $this->cookie->expects($this->once())
-      ->method("setcookie")
+      ->method("setValue")
       ->with(
-        $this->equalTo($this->rememberme->getCookieName()),
-        $this->matchesRegularExpression('/^'.$this->userid.'\|[a-f0-9]{32,}\|[a-f0-9]{32,}$/'),
-        $this->greaterThan($now)
+        $this->matchesRegularExpression('/^'.$this->userid.'\|[a-f0-9]{32,}\|[a-f0-9]{32,}$/')
       );
     $testExpr = '/^[a-f0-9]{32,}$/';
     $this->storage->expects($this->once())
@@ -331,16 +297,11 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
   }
 
   public function testClearCookieExpiresCookieAndDeletesTriplet() {
-    $_COOKIE[$this->rememberme->getCookieName()] = implode("|", array(
-      $this->userid, $this->validToken, $this->validPersistentToken));
+      $this->cookie->method("getValue")->willReturn( implode("|", array(
+      $this->userid, $this->validToken, $this->validPersistentToken)));
     $now = time();
     $this->cookie->expects($this->once())
-      ->method("setcookie")
-      ->with(
-        $this->equalTo($this->rememberme->getCookieName()),
-        $this->anything(),
-        $this->lessThan($now)
-      );
+      ->method("deleteCookie");
     $this->storage->expects($this->once())
       ->method("cleanTriplet")
       ->with(
