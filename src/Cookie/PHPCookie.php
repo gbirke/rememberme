@@ -24,7 +24,7 @@ class PHPCookie implements CookieInterface
      * Path where the cookie is valid
      * @var string
      */
-    protected $path = "";
+    protected $path = "/";
 
     /**
      * Cookie domain
@@ -42,7 +42,7 @@ class PHPCookie implements CookieInterface
      */
     protected $httpOnly = true;
 
-    function __construct($name="PHP_REMEMBERME", $expireTime=604800, $path="", $domain="", $secure=false, $httpOnly=true)
+    function __construct($name="PHP_REMEMBERME", $expireTime=604800, $path="/", $domain="", $secure=false, $httpOnly=true)
     {
         $this->name = $name;
         $this->expireTime = $expireTime;
