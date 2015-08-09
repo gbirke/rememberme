@@ -12,7 +12,7 @@ class PHPCookie implements CookieInterface
      * Name of the cookie
      * @var string
      */
-    protected $name = "PHP_REMEMBERME";
+    protected $name = "REMEMBERME";
 
     /**
      * Number of seconds in the future the cookie and storage will expire (defaults to 1 week)
@@ -42,7 +42,7 @@ class PHPCookie implements CookieInterface
      */
     protected $httpOnly = true;
 
-    function __construct($name="PHP_REMEMBERME", $expireTime=604800, $path="/", $domain="", $secure=false, $httpOnly=true)
+    function __construct($name="REMEMBERME", $expireTime=604800, $path="/", $domain="", $secure=false, $httpOnly=true)
     {
         $this->name = $name;
         $this->expireTime = $expireTime;
