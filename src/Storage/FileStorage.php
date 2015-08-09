@@ -5,7 +5,7 @@ namespace Birke\Rememberme\Storage;
 /**
  * File-Based Storage
  */
-class File implements StorageInterface
+class FileStorage implements StorageInterface
 {
     /**
      * @var string

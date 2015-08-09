@@ -7,7 +7,7 @@ namespace Birke\Rememberme\Storage;
  *
  * @author birke
  */
-class PDO extends DB
+class PDOStorage extends AbstractDBStorage
 {
     /**
      * @var \PDO
@@ -127,7 +127,7 @@ class PDO extends DB
     }
 
     /**
-     * @param PDO $connection
+     * @param PDOStorage $connection
      */
     public function setConnection(\PDO $connection)
     {

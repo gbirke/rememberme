@@ -8,7 +8,7 @@ namespace Birke\Rememberme\Storage;
  *
  * @author Gabriel Birke
  */
-abstract class DB implements StorageInterface
+abstract class AbstractDBStorage implements StorageInterface
 {
     /**
      *

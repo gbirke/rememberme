@@ -37,7 +37,7 @@ if(!is_writable($storagePath) || !is_dir($storagePath)) {
             To run the example, please create the directory and give it the
             correct permissions.");
 }
-$storage = new Rememberme\Storage\File($storagePath);
+$storage = new Rememberme\Storage\FileStorage($storagePath);
 $rememberMe = new Rememberme\Authenticator($storage);
 
 // First, we initialize the session, to see if we are already logged in
