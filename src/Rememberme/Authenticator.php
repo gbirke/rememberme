@@ -222,7 +222,7 @@ class Authenticator
      */
     protected function createToken()
     {
-        return bin2hex(openssl_random_pseudo_bytes(32))
+        return bin2hex(random_bytes(32))
     }
 
     /**
