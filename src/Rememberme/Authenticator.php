@@ -222,7 +222,7 @@ class Authenticator
      */
     protected function createToken()
     {
-        return md5(uniqid(mt_rand(), true));
+        return bin2hex(random_bytes(32))
     }
 
     /**
