@@ -26,7 +26,8 @@
         "phpunit/dbunit": "^2.0"
     },
     "suggest": {
-        "ircmaxell/random-lib": "For generating random tokens with different entropy sources"
+        "ircmaxell/random-lib": "For generating random tokens with different entropy sources",
+        "predis/predis": "Needed if you used Redis storage"
     },
     "scripts": {
         "test": "phpunit",
