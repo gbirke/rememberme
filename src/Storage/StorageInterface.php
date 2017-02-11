@@ -17,8 +17,8 @@ interface StorageInterface
     /**
      * Return Tri-state value constant
      *
-     * @param mixed $credential Unique credential (user id, email address, user name)
-     * @param string $token One-Time Token
+     * @param mixed  $credential      Unique credential (user id, email address, user name)
+     * @param string $token           One-Time Token
      * @param string $persistentToken Persistent Token
      * @return int
      */
@@ -29,19 +29,19 @@ interface StorageInterface
      * Create a new storage entry, if the combination of credential and persistent
      * token does not exist.
      *
-     * @param mixed $credential
+     * @param mixed  $credential
      * @param string $token
      * @param string $persistentToken
-     * @param int $expire Timestamp when this triplet will expire
+     * @param int    $expire          Timestamp when this triplet will expire
      */
     public function storeTriplet($credential, $token, $persistentToken, $expire);
 
     /**
      * Replace current token after successful authentication
-     * @param mixed $credential
+     * @param mixed  $credential
      * @param string $token
      * @param string $persistentToken
-     * @param int $expire
+     * @param int    $expire
      */
     public function replaceTriplet($credential, $token, $persistentToken, $expire);
 
@@ -49,7 +49,7 @@ interface StorageInterface
      * Remove one triplet of the user from the store
      *
      * @abstract
-     * @param mixed $credential
+     * @param mixed  $credential
      * @param string $persistentToken
      * @return void
      */

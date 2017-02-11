@@ -7,6 +7,11 @@ use Birke\Rememberme\Cookie\PHPCookie;
 use Birke\Rememberme\Token\DefaultToken;
 use Birke\Rememberme\Token\TokenInterface;
 
+/**
+ * Authenticate via "remember me" cookie
+ *
+ * @package Birke\Rememberme
+ */
 class Authenticator
 {
 
@@ -62,16 +67,18 @@ class Authenticator
 
     /**
      * @param Storage\StorageInterface $storage
-     * @param TokenInterface $tokenGenerator
-     * @param Cookie\CookieInterface $cookie
+     * @param TokenInterface           $tokenGenerator
+     * @param Cookie\CookieInterface   $cookie
      */
-    public function __construct(Storage\StorageInterface $storage, TokenInterface $tokenGenerator = null,
-                                Cookie\CookieInterface $cookie=null)
-    {
-        if ( is_null($tokenGenerator) ) {
+    public function __construct(
+        Storage\StorageInterface $storage,
+        TokenInterface $tokenGenerator = null,
+        Cookie\CookieInterface $cookie = null
+    ) {
+        if (is_null($tokenGenerator)) {
             $tokenGenerator = new DefaultToken();
         }
-        if ( is_null($cookie) ) {
+        if (is_null($cookie)) {
             $cookie = new PHPCookie();
         }
         $this->storage = $storage;
@@ -96,12 +103,11 @@ class Authenticator
             $this->storage->cleanExpiredTokens(time() - $this->expireTime);
         }
 
-        switch ($this->storage->findTriplet($cookieValues[0], $cookieValues[1] . $this->salt, $cookieValues[2] . $this->salt)) {
-
+        switch ($this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt)) {
             case Storage\StorageInterface::TRIPLET_FOUND:
                 $expire = time() + $this->expireTime;
                 $newToken = $this->tokenGenerator->createToken();
-                $this->storage->replaceTriplet($cookieValues[0], $newToken . $this->salt, $cookieValues[2] . $this->salt, $expire);
+                $this->storage->replaceTriplet($cookieValues[0], $newToken.$this->salt, $cookieValues[2].$this->salt, $expire);
                 $this->cookie->setValue(implode("|", array($cookieValues[0], $newToken, $cookieValues[2])));
                 $loginResult = $cookieValues[0];
                 break;
@@ -116,6 +122,7 @@ class Authenticator
 
                 break;
         }
+
         return $loginResult;
     }
 
@@ -130,12 +137,13 @@ class Authenticator
             return false;
         }
 
-        $state = $this->storage->findTriplet($cookieValues[0], $cookieValues[1] . $this->salt, $cookieValues[2] . $this->salt);
+        $state = $this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt);
+
         return $state == Storage\StorageInterface::TRIPLET_FOUND;
     }
 
     /**
-     * @param $credential
+     * @param mixed $credential
      * @return $this
      */
     public function createCookie($credential)
@@ -145,7 +153,7 @@ class Authenticator
 
         $expire = time() + $this->expireTime;
 
-        $this->storage->storeTriplet($credential, $newToken . $this->salt, $newPersistentToken . $this->salt, $expire);
+        $this->storage->storeTriplet($credential, $newToken.$this->salt, $newPersistentToken.$this->salt, $expire);
         $this->cookie->setValue(implode("|", array($credential, $newToken, $newPersistentToken)));
 
         return $this;
@@ -167,7 +175,7 @@ class Authenticator
             return false;
         }
 
-        $this->storage->cleanTriplet($cookieValues[0], $cookieValues[2] . $this->salt);
+        $this->storage->cleanTriplet($cookieValues[0], $cookieValues[2].$this->salt);
 
         return true;
     }
@@ -179,6 +187,7 @@ class Authenticator
     public function setCookie(CookieInterface $cookie)
     {
         $this->cookie = $cookie;
+
         return $this;
     }
 
@@ -199,12 +208,13 @@ class Authenticator
     }
 
     /**
-     * @param $state
+     * @param bool $cleanStoredCookies
      * @return Authenticator
      */
-    public function setCleanStoredTokensOnInvalidResult($state)
+    public function setCleanStoredTokensOnInvalidResult($cleanStoredCookies)
     {
-        $this->cleanStoredTokensOnInvalidResult = $state;
+        $this->cleanStoredTokensOnInvalidResult = $cleanStoredCookies;
+
         return $this;
     }
 
@@ -214,21 +224,6 @@ class Authenticator
     public function getCleanStoredTokensOnInvalidResult()
     {
         return $this->cleanStoredTokensOnInvalidResult;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getCookieValues()
-    {
-
-        $cookieValues = explode("|", $this->cookie->getValue(), 3);
-
-        if (count($cookieValues) < 3) {
-            return array();
-        }
-
-        return $cookieValues;
     }
 
     /**
@@ -292,5 +287,20 @@ class Authenticator
     public function setCleanExpiredTokensOnLogin($cleanExpiredTokensOnLogin)
     {
         $this->cleanExpiredTokensOnLogin = $cleanExpiredTokensOnLogin;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getCookieValues()
+    {
+
+        $cookieValues = explode("|", $this->cookie->getValue(), 3);
+
+        if (count($cookieValues) < 3) {
+            return array();
+        }
+
+        return $cookieValues;
     }
 }

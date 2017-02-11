@@ -2,7 +2,11 @@
 
 namespace Birke\Rememberme\Token;
 
-interface TokenInterface {
+/**
+ * Interface for creating random tokens
+ */
+interface TokenInterface
+{
     /**
      * Generate a random, 32-byte Token
      * @return string

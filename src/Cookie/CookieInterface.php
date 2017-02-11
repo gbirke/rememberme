@@ -8,7 +8,8 @@ namespace Birke\Rememberme\Cookie;
  *
  * @package Birke\Cookie
  */
-interface CookieInterface {
+interface CookieInterface
+{
 
     /**
      * Get the value from the cookie
@@ -30,5 +31,4 @@ interface CookieInterface {
      * and remove all values store din this cookie.
      */
     public function deleteCookie();
-
 }

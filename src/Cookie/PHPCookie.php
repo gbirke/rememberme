@@ -42,7 +42,16 @@ class PHPCookie implements CookieInterface
      */
     protected $httpOnly = true;
 
-    function __construct($name="REMEMBERME", $expireTime=604800, $path="/", $domain="", $secure=false, $httpOnly=true)
+    /**
+     * PHPCookie constructor.
+     * @param string $name
+     * @param int    $expireTime
+     * @param string $path
+     * @param string $domain
+     * @param bool   $secure
+     * @param bool   $httpOnly
+     */
+    public function __construct($name = "REMEMBERME", $expireTime = 604800, $path = "/", $domain = "", $secure = false, $httpOnly = true)
     {
         $this->name = $name;
         $this->expireTime = $expireTime;
@@ -53,24 +62,33 @@ class PHPCookie implements CookieInterface
     }
 
     /**
+     * @inheritdoc
      * @param string $value
-     * @return bool
      */
     public function setValue($value)
     {
         $expire = time() + $this->expireTime;
         $_COOKIE[$this->name] = $value;
-        return setcookie($this->name, $value, $expire, $this->path, $this->domain, $this->secure, $this->httpOnly);
+        setcookie($this->name, $value, $expire, $this->path, $this->domain, $this->secure, $this->httpOnly);
     }
 
-    public function getValue(){
+    /**
+     * @inheritdoc
+     * @return string
+     */
+    public function getValue()
+    {
         return isset($_COOKIE[$this->name]) ? $_COOKIE[$this->name] : "";
     }
 
-    public function deleteCookie(){
+    /**
+     * @inheritdoc
+     */
+    public function deleteCookie()
+    {
         $expire = time() - $this->expireTime;
         unset($_COOKIE[$this->name]);
-        return setcookie($this->name, "", $expire, $this->path, $this->domain, $this->secure, $this->httpOnly);
+        setcookie($this->name, "", $expire, $this->path, $this->domain, $this->secure, $this->httpOnly);
     }
 
     /**
@@ -114,7 +132,7 @@ class PHPCookie implements CookieInterface
     }
 
     /**
-     * @param $path
+     * @param string $path
      */
     public function setPath($path)
     {
@@ -130,7 +148,7 @@ class PHPCookie implements CookieInterface
     }
 
     /**
-     * @param $domain
+     * @param string $domain
      */
     public function setDomain($domain)
     {
@@ -146,7 +164,7 @@ class PHPCookie implements CookieInterface
     }
 
     /**
-     * @param $secure
+     * @param bool $secure
      */
     public function setSecure($secure)
     {
@@ -162,7 +180,7 @@ class PHPCookie implements CookieInterface
     }
 
     /**
-     * @param $httponly
+     * @param bool $httponly
      */
     public function setHttpOnly($httponly)
     {

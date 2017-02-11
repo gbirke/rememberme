@@ -15,7 +15,8 @@ namespace Birke\Rememberme\Token;
  *
  * @package Birke\Rememberme\Token
  */
-class ClassicToken implements TokenInterface {
+class ClassicToken implements TokenInterface
+{
 
     /**
      * Generate a pseudo-random, 32-byte Token
@@ -25,6 +26,4 @@ class ClassicToken implements TokenInterface {
     {
         return md5(uniqid(mt_rand(), true));
     }
-
-
 }

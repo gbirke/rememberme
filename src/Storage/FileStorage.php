@@ -28,7 +28,7 @@ class FileStorage implements StorageInterface
     }
 
     /**
-     * @param mixed $credential
+     * @param mixed  $credential
      * @param string $token
      * @param string $persistentToken
      * @return int
@@ -54,10 +54,10 @@ class FileStorage implements StorageInterface
     }
 
     /**
-     * @param mixed $credential
+     * @param mixed  $credential
      * @param string $token
      * @param string $persistentToken
-     * @param int $expire
+     * @param int    $expire
      * @return $this
      */
     public function storeTriplet($credential, $token, $persistentToken, $expire)
@@ -67,11 +67,12 @@ class FileStorage implements StorageInterface
         $token = sha1($token);
         $fn = $this->getFilename($credential, $persistentToken);
         file_put_contents($fn, $token);
+
         return $this;
     }
 
     /**
-     * @param mixed $credential
+     * @param mixed  $credential
      * @param string $persistentToken
      */
     public function cleanTriplet($credential, $persistentToken)
@@ -86,10 +87,10 @@ class FileStorage implements StorageInterface
 
     /**
      * Replace current token after successful authentication
-     * @param $credential
-     * @param $token
-     * @param $persistentToken
-     * @param int $expire
+     * @param mixed  $credential
+     * @param string $token
+     * @param string $persistentToken
+     * @param int    $expire
      */
     public function replaceTriplet($credential, $token, $persistentToken, $expire)
     {
@@ -98,23 +99,13 @@ class FileStorage implements StorageInterface
     }
 
     /**
-     * @param $credential
+     * @param mixed $credential
      */
     public function cleanAllTriplets($credential)
     {
-        foreach (glob($this->path . DIRECTORY_SEPARATOR . $credential . ".*" . $this->suffix) as $file) {
+        foreach (glob($this->path.DIRECTORY_SEPARATOR.$credential.".*".$this->suffix) as $file) {
             unlink($file);
         }
-    }
-
-    /**
-     * @param $credential
-     * @param $persistentToken
-     * @return string
-     */
-    protected function getFilename($credential, $persistentToken)
-    {
-        return $this->path . DIRECTORY_SEPARATOR . $credential . "." . $persistentToken . $this->suffix;
     }
 
     /**
@@ -125,12 +116,20 @@ class FileStorage implements StorageInterface
      */
     public function cleanExpiredTokens($expiryTime)
     {
-        foreach (glob($this->path . DIRECTORY_SEPARATOR . "*" . $this->suffix) as $file) {
+        foreach (glob($this->path.DIRECTORY_SEPARATOR."*".$this->suffix) as $file) {
             if (filemtime($file) < $expiryTime) {
                 unlink($file);
             }
         }
     }
 
-
+    /**
+     * @param $credential
+     * @param $persistentToken
+     * @return string
+     */
+    protected function getFilename($credential, $persistentToken)
+    {
+        return $this->path.DIRECTORY_SEPARATOR.$credential.".".$persistentToken.$this->suffix;
+    }
 }

@@ -41,12 +41,12 @@ abstract class AbstractDBStorage implements StorageInterface
     protected $expiresColumn = "";
 
     /**
-     * @param $options
+     * @param array $options
      */
     public function __construct($options)
     {
         foreach ($options as $prop => $value) {
-            $setter = "set" . ucfirst($prop);
+            $setter = "set".ucfirst($prop);
             if (method_exists($this, $setter)) {
                 $this->$setter($value);
             }
@@ -62,12 +62,13 @@ abstract class AbstractDBStorage implements StorageInterface
     }
 
     /**
-     * @param $tableName
+     * @param string $tableName
      * @return $this
      */
     public function setTableName($tableName)
     {
         $this->tableName = $tableName;
+
         return $this;
     }
 
@@ -80,12 +81,13 @@ abstract class AbstractDBStorage implements StorageInterface
     }
 
     /**
-     * @param $credentialColumn
+     * @param string $credentialColumn
      * @return $this
      */
     public function setCredentialColumn($credentialColumn)
     {
         $this->credentialColumn = $credentialColumn;
+
         return $this;
     }
 
@@ -98,12 +100,13 @@ abstract class AbstractDBStorage implements StorageInterface
     }
 
     /**
-     * @param $tokenColumn
+     * @param string $tokenColumn
      * @return $this
      */
     public function setTokenColumn($tokenColumn)
     {
         $this->tokenColumn = $tokenColumn;
+
         return $this;
     }
 
@@ -116,12 +119,13 @@ abstract class AbstractDBStorage implements StorageInterface
     }
 
     /**
-     * @param $persistentTokenColumn
+     * @param string $persistentTokenColumn
      * @return $this
      */
     public function setPersistentTokenColumn($persistentTokenColumn)
     {
         $this->persistentTokenColumn = $persistentTokenColumn;
+
         return $this;
     }
 
@@ -134,12 +138,13 @@ abstract class AbstractDBStorage implements StorageInterface
     }
 
     /**
-     * @param $expiresColumn
+     * @param string $expiresColumn
      * @return $this
      */
     public function setExpiresColumn($expiresColumn)
     {
         $this->expiresColumn = $expiresColumn;
+
         return $this;
     }
 }

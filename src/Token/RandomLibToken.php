@@ -1,16 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gbirke
- * Date: 22.07.15
- * Time: 21:29
- */
 
 namespace Birke\Rememberme\Token;
 
 use RandomLib\Factory;
 use RandomLib\Generator;
 
+/**
+ * A token class that uses ircmaxell/random-lib to generate secure random tokens
+ *
+ * @package Birke\Rememberme\Token
+ */
 class RandomLibToken extends AbstractToken
 {
     /**
@@ -20,14 +19,18 @@ class RandomLibToken extends AbstractToken
 
     protected $formatMap;
 
-    public function __construct($tokenBytes=32, $tokenFormat=self::FORMAT_HEX, Generator $generator=null)
+    /**
+     * @param int            $tokenBytes
+     * @param string         $tokenFormat
+     * @param Generator|null $generator
+     */
+    public function __construct($tokenBytes = 32, $tokenFormat = self::FORMAT_HEX, Generator $generator = null)
     {
         parent::__construct($tokenBytes, $tokenFormat);
         if (is_null($generator)) {
-            $factory = new Factory;
+            $factory = new Factory();
             $this->generator = $factory->getMediumStrengthGenerator();
-        }
-        else {
+        } else {
             $this->generator = $generator;
         }
         $this->formatMap = [
@@ -45,6 +48,4 @@ class RandomLibToken extends AbstractToken
     {
         return $this->generator->generateString($this->tokenBytes, $this->formatMap[$this->tokenFormat]);
     }
-
-
 }
