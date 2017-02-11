@@ -127,7 +127,7 @@ class PDOStorage extends AbstractDBStorage
     }
 
     /**
-     * @param PDOStorage $connection
+     * @param \PDO $connection
      */
     public function setConnection(\PDO $connection)
     {

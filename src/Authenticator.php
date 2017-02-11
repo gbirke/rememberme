@@ -172,11 +172,6 @@ class Authenticator
         return true;
     }
 
-    protected function expireIfNeeded()
-    {
-
-    }
-
     /**
      * @param CookieInterface $cookie
      * @return $this

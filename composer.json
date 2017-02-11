@@ -16,7 +16,7 @@
         "psr-4": {"Birke\\Rememberme\\": "src/"}
     },
     "require": {
-        "paragonie/random_compat": "^1.1.4"
+        "paragonie/random_compat": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
@@ -25,5 +25,8 @@
     },
     "suggest": {
         "ircmaxell/random-lib": "For generating tokens without openssl_random_pseudo_bytes"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }

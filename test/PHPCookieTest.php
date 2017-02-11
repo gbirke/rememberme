@@ -10,13 +10,15 @@ namespace Birke\Rememberme\Cookie {
 
 namespace {
 
-    class PHPCookieTest extends PHPUnit_Framework_TestCase
+	use Birke\Rememberme\Cookie\PHPCookie;
+
+	class PHPCookieTest extends PHPUnit_Framework_TestCase
     {
         public function testDefaultValues()
         {
-            $cookie = new \Birke\Rememberme\Cookie\PHPCookie();
+            $cookie = new PHPCookie();
 
-            $this->assertEquals('', $cookie->getPath());
+            $this->assertEquals('/', $cookie->getPath());
             $this->assertEquals('', $cookie->getDomain());
             $this->assertFalse($cookie->getSecure());
             $this->assertTrue($cookie->getHttpOnly());
@@ -24,7 +26,7 @@ namespace {
 
         public function testSetters()
         {
-            $cookie = new \Birke\Rememberme\Cookie\PHPCookie();
+            $cookie = new PHPCookie();
 
             $cookie->setName("SECURE_REMEMBER");
             $this->assertEquals("SECURE_REMEMBER", $cookie->getName());
@@ -45,14 +47,14 @@ namespace {
         public function testSetValueSetsSuperglobal()
         {
             unset($_COOKIE["SET_TEST_1"]);
-            $cookie = new \Birke\Rememberme\Cookie\PHPCookie("SET_TEST_1");
+            $cookie = new PHPCookie("SET_TEST_1");
             $cookie->setValue("testvalue");
             $this->assertEquals("testvalue", $_COOKIE["SET_TEST_1"]);
         }
 
         public function testGetValueReturnsSuperglobal(){
             $_COOKIE["GET_TEST_1"] = "testvalue";
-            $cookie = new \Birke\Rememberme\Cookie\PHPCookie("GET_TEST_1");
+            $cookie = new PHPCookie("GET_TEST_1");
             $this->assertEquals("testvalue", $cookie->getValue());
         }
     }

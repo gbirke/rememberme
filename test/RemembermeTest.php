@@ -6,7 +6,7 @@ use Birke\Rememberme\Storage\StorageInterface;
 class RemembermeTest extends PHPUnit_Framework_TestCase
 {
   /**
-   * @var Rememberme
+   * @var Birke\Rememberme\Authenticator
    */
   protected $rememberme;
 
@@ -29,7 +29,9 @@ class RemembermeTest extends PHPUnit_Framework_TestCase
     $this->storage = $this->getMockBuilder(StorageInterface::class)->getMock();
     $this->rememberme = new Birke\Rememberme\Authenticator($this->storage);
 
-    $this->cookie = $this->getMock(CookieInterface::class, array("setValue", "getValue", "deleteCookie"));
+    $this->cookie = $this->getMockBuilder(CookieInterface::class)
+	    ->setMethods(array("setValue", "getValue", "deleteCookie"))
+	    ->getMock();
 
     $this->rememberme->setCookie($this->cookie);
 
