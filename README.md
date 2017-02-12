@@ -48,7 +48,7 @@ $auth = new Authenticator($storage, null, $cookie);
 ```
 
 ## Token security
-This library uses the [`openssl_random_pseudo_bytes`][2] function by default to generate a 16-byte token 
+This library uses the [`random_bytes`][2] function by default to generate a 16-byte token 
 (a 32 char hexadecimal string). That should be sufficiently secure for most applications.
 
 If you need more security, instantiate the `Authenticator` class with a custom token generator.
@@ -59,7 +59,7 @@ The following example generates Base64-encoded tokens with 128 characters:
  $auth = new Authenticator($storage, $tokenGenerator);
  ```
  
-On systems without `openssl_random_pseudo_bytes` or with really good other entropy sources,
+If you like even more control over the generation of your random tokens, 
 have a look at the [RandomLib][3]. Rememberme has a `RandomLibToken` class that can use it.
 
 ## Cleaning up expired tokens
@@ -84,5 +84,5 @@ tokens whenever a login occurs. For better security (and less convenience of you
 you could completely clear your token storage once after updating.
  
 [1]: http://jaspan.com/improved%5Fpersistent%5Flogin%5Fcookie%5Fbest%5Fpractice
-[2]: http://www.php.net/manual/en/function.openssl-random-pseudo-bytes.php
+[2]: http://php.net/manual/en/function.random-bytes.php
 [3]: https://github.com/ircmaxell/RandomLib
