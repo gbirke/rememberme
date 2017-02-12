@@ -6,7 +6,7 @@
 </p>
 <p>Please log in with the username and password <em>demo</em></p>
 
-<form method="post" action="index.php">
+<form method="post" action="/login">
   <label for="username">User Name:</label> <input type="text" name="username" id="username"> <br>
   <label for="password">Password:</label> <input type="password" name="password" id="password"><br>
   <input type="checkbox" id="rememberme" value="1" name="rememberme"> Remember me  <br>

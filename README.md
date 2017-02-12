@@ -29,7 +29,12 @@ against the following attack scenarios:
 	composer require birke/rememberme
 
 ## Usage example
-See the `example` directory for an example.
+See the `example` directory for an example. You can run it on your local machine with the command
+
+    php -S 127.0.0.1:8085 -t example
+
+To understand the basic application structure, have a look at `index.php` and the
+`user_is_looged_in.php` template.
 
 The example uses the file system to store the tokens on the server side. In most
 cases it's better to swap the storage with the `PDOStorage` class.

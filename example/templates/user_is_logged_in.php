@@ -1,17 +1,24 @@
 <p>You are logged in as <strong><?php echo $_SESSION['username']; ?></strong></p>
 <p>Your session ID is  <strong><?php echo session_id(); ?></strong></p>
-<?php if(!empty($_COOKIE['PHP_REMEMBERME'])): ?>
+
+<?php if(!empty($_COOKIE['REMEMBERME'])): ?>
         <p>The remember me cookie is active.
-          Cookie value is <code><?php echo $_COOKIE['PHP_REMEMBERME']; ?></code></p>
+          Cookie value is <code><?php echo $_COOKIE['REMEMBERME']; ?></code></p>
+        <p>Close the browser window and reopen it to test the "remember me" functionality.</p>
 <?php else: ?>
         <p>The remember me cookie is not active.</p>
 <?php endif; ?>     
+
 <?php if(!empty($_SESSION['remembered_by_cookie'])): ?>
         <p>You were logged in with the "Remember me" cookie. In a real application
           you should ask the user for his credentials before allowing him anything
           "dangerous" like changing the login information, accessing sensitive data
           or making a payment.</p>
+<?php else: ?>
+    <p>You logged in through the login form, the "Remember me" cookie was not used for authentication.</p>
 <?php endif; ?>
+
+
 <p>If you want to test the warning when a possible identity theft is detected, try the following steps:</p>
 <ol>
   <li>Login to this page with a non-Firefox Browser. In the following steps I
@@ -26,6 +33,6 @@
   <li>Start Chrome and try to show this page - you should get a warning instead of the login dialog.</li>
   <li>Refresh this page in Firefox - You are logged out.</li>
 </ol>
-<p><a href="index.php?logout=true">Log out in this browser window.</a></p>
-<p><a href="index.php?completelogout=true">Log out from <strong>all</strong>
+<p><a href="/logout">Log out in this browser window (clear the remember me cookie).</a></p>
+<p><a href="/completelogout">Log out from <strong>all</strong>
   sessions in all browser windows where the "Remember me" cookie is active.</a></p>
