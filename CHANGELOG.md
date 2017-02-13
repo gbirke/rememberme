@@ -3,9 +3,24 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 2.0 - Unreleased
+### Added
+- `CookieInterface`
+- `TokenInterface` for different token generation methods
+- [PHPCS](https://github.com/squizlabs/PHP_CodeSniffer) coding style checks
+- composer scripts:
+  - `test` runs the unit tests
+  - `cs` runs the coding style checks
+  - `ci` runs both `cs` and `test`
+
+### Changed
+- Rewritten example to use a picoframework
 - Update PHPUnit dependency to 5.7
 - Check in `composer.lock`
+- All classes that use the `StorageInterface` now have a `Storage` suffix. 
+
+## Removed
+- `Authenticator::generateToken` If you've subclassed it with your own method, please create a `TokenInterface` implementation instead and pass it in as a dependency.
 
 ## 1.0.5 (2016-02-12)
 - Changed method for generating tokens to `random_bytes` instead of `uniquid`, with backwards compatibility library for PHP < 7.0. This'll improve **security** for new tokens.
