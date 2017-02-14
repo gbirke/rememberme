@@ -20,7 +20,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
-        "ircmaxell/random-lib": "1.0.*@dev",
+        "ircmaxell/random-lib": "1.*@dev",
         "escapestudios/symfony2-coding-standard": "~2.0",
         "squizlabs/php_codesniffer": "^2.8"
     },

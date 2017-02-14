@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a1fae7dbbfb9dea5b9ea982d8e1bfc9f",
-    "content-hash": "89d41e22f034765a9604433412dd3da4",
+    "hash": "29f03606703ff71305a1fabdf1e59bb8",
+    "content-hash": "172f242b1f61f1a09be91a352845474b",
     "packages": [
         {
             "name": "paragonie/random_compat",
@@ -159,7 +159,7 @@
         },
         {
             "name": "ircmaxell/random-lib",
-            "version": "1.0.x-dev",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ircmaxell/RandomLib.git",
