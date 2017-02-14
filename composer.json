@@ -29,6 +29,6 @@
     },
     "scripts": {
         "test": "phpunit",
-        "cs": "phpcbf --standard=Symfony2 src"
+        "cs": "phpcs -p -s"
     }
 }
