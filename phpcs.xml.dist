@@ -4,6 +4,7 @@
         <exclude name="Squiz.Functions.GlobalFunction.Found"></exclude>
     </rule>
     <file>src</file>
+    <file>example</file>
     <arg name="extensions" value="php"/>
     <arg name="encoding" value="utf8"/>
     <exclude-pattern>vendor</exclude-pattern>

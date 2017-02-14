@@ -1,4 +1,6 @@
-<?php if(!empty($msg)) echo "<p class='msg'>$msg</p>"; ?>
+<?php if (!empty($msg)) {
+    echo "<p class='msg'>$msg</p>";
+} ?>
 
 <p>This is the demo for logging in with the Rememberme Library. <br>
   You are seeing this form because you have no active "Remember me" cookie and no
