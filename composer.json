@@ -29,6 +29,7 @@
     },
     "scripts": {
         "test": "phpunit",
-        "cs": "phpcs -p -s"
+        "cs": "phpcs -p -s",
+        "ci": ["@test", "@cs"]
     }
 }
