@@ -11,6 +11,13 @@ class RandomLibTokenTest extends PHPUnit_Framework_TestCase {
                 'The RandomLib library is not available.'
             );
         }
+
+        // TODO: Remove this check when RandomLib works with PHP >= 7.1 again
+        if (version_compare(PHP_VERSION, '7.1', '>=')) {
+            $this->markTestSkipped(
+                'RandomLib library is not compatible with PHP PHP >= 7.1.'
+            );
+        }
     }
 
     public function testRandomLibTokenReturns32CharsInHexadecimal(){
