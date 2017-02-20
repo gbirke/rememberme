@@ -92,9 +92,9 @@ class Authenticator
      */
     public function login()
     {
-        $cookieValues = $this->getCookieValues();
+        $triplet = Triplet::fromString($this->cookie->getValue());
 
-        if (!$cookieValues) {
+        if (!$triplet->isValid()) {
             return false;
         }
 
@@ -103,13 +103,23 @@ class Authenticator
             $this->storage->cleanExpiredTokens(time() - $this->expireTime);
         }
 
-        switch ($this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt)) {
+        $tripletLookupResult = $this->storage->findTriplet(
+            $triplet->getCredential(),
+            $triplet->getSaltedOneTimeToken($this->salt),
+            $triplet->getSaltedPersistentToken($this->salt)
+        );
+        switch ($tripletLookupResult) {
             case Storage\StorageInterface::TRIPLET_FOUND:
                 $expire = time() + $this->expireTime;
-                $newToken = $this->tokenGenerator->createToken();
-                $this->storage->replaceTriplet($cookieValues[0], $newToken.$this->salt, $cookieValues[2].$this->salt, $expire);
-                $this->cookie->setValue(implode("|", array($cookieValues[0], $newToken, $cookieValues[2])));
-                $loginResult = $cookieValues[0];
+                $newTriplet = new Triplet($triplet->getCredential(), $this->tokenGenerator->createToken(), $triplet->getPersistentToken());
+                $this->storage->replaceTriplet(
+                    $newTriplet->getCredential(),
+                    $newTriplet->getSaltedOneTimeToken($this->salt),
+                    $newTriplet->getSaltedPersistentToken($this->salt),
+                    $expire
+                );
+                $this->cookie->setValue((string) $newTriplet);
+                $loginResult = $triplet->getCredential();
                 break;
 
             case Storage\StorageInterface::TRIPLET_INVALID:
@@ -117,7 +127,7 @@ class Authenticator
                 $this->lastLoginTokenWasInvalid = true;
 
                 if ($this->cleanStoredTokensOnInvalidResult) {
-                    $this->storage->cleanAllTriplets($cookieValues[0]);
+                    $this->storage->cleanAllTriplets($triplet->getCredential());
                 }
 
                 break;
@@ -131,13 +141,17 @@ class Authenticator
      */
     public function cookieIsValid()
     {
-        $cookieValues = $this->getCookieValues();
+        $triplet = Triplet::fromString($this->cookie->getValue());
 
-        if (!$cookieValues) {
+        if (!$triplet->isValid()) {
             return false;
         }
 
-        $state = $this->storage->findTriplet($cookieValues[0], $cookieValues[1].$this->salt, $cookieValues[2].$this->salt);
+        $state = $this->storage->findTriplet(
+            $triplet->getCredential(),
+            $triplet->getSaltedOneTimeToken($this->salt),
+            $triplet->getSaltedPersistentToken($this->salt)
+        );
 
         return $state == Storage\StorageInterface::TRIPLET_FOUND;
     }
@@ -167,15 +181,15 @@ class Authenticator
     public function clearCookie()
     {
 
-        $cookieValues = $this->getCookieValues();
+        $triplet = Triplet::fromString($this->cookie->getValue());
 
         $this->cookie->deleteCookie();
 
-        if (count($cookieValues) < 3) {
+        if (!$triplet->isValid()) {
             return false;
         }
 
-        $this->storage->cleanTriplet($cookieValues[0], $cookieValues[2].$this->salt);
+        $this->storage->cleanTriplet($triplet->getCredential(), $triplet->getSaltedPersistentToken($this->salt));
 
         return true;
     }
@@ -287,20 +301,5 @@ class Authenticator
     public function setCleanExpiredTokensOnLogin($cleanExpiredTokensOnLogin)
     {
         $this->cleanExpiredTokensOnLogin = $cleanExpiredTokensOnLogin;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getCookieValues()
-    {
-
-        $cookieValues = explode("|", $this->cookie->getValue(), 3);
-
-        if (count($cookieValues) < 3) {
-            return array();
-        }
-
-        return $cookieValues;
     }
 }
