@@ -12,10 +12,10 @@ session_start();
 // Initialize RememberMe Library with file storage
 $storagePath = dirname(__FILE__)."/tokens";
 if (!is_writable($storagePath) || !is_dir($storagePath)) {
-    die(implode("\n", [
-        "'$storagePath' does not exist or is not writable by the web server.",
-        "To run the example, please create the directory and give it the correct permissions.",
-    ]));
+    die(
+        "'$storagePath' does not exist or is not writable by the web server.\n".
+        "To run the example, please create the directory and give it the correct permissions."
+    );
 }
 $storage = new FileStorage($storagePath);
 $rememberMe = new Authenticator($storage);
@@ -59,25 +59,28 @@ $router->beforeEachRoute(function () use ($rememberMe) {
 });
 
 $router->route('!^/login$!', function () use ($rememberMe) {
-    if (!empty($_POST)) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-        // In a real application you'd check the database if the username and password matches
-        if ($username === "demo" && $password === "demo") {
-            session_regenerate_id();
-            $_SESSION['username'] = $username;
-            // If the user wants to be remembered, create Rememberme cookie
-            if (!empty($_POST['rememberme'])) {
-                $rememberMe->createCookie($username);
-            } else {
-                $rememberMe->clearCookie();
-            }
-            header("Location: /");
-        } else {
-            render_template("login", "Invalid username or password, please try again.");
-        }
-    } else {
+    if (empty($_POST)) {
         render_template("login");
+    }
+
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    // In a real application you'd check the database if the username and password matches
+    if ($username === "demo" && $password === "demo") {
+        session_regenerate_id();
+        $_SESSION['username'] = $username;
+
+        // If the user wants to be remembered, create Rememberme cookie
+        if (!empty($_POST['rememberme'])) {
+            $rememberMe->createCookie($username);
+        } else {
+            $rememberMe->clearCookie();
+        }
+
+        header("Location: /");
+        exit();
+    } else {
+        render_template("login", "Invalid username or password, please try again.");
     }
 });
 

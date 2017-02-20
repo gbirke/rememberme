@@ -8,4 +8,13 @@
     <arg name="extensions" value="php"/>
     <arg name="encoding" value="utf8"/>
     <exclude-pattern>vendor</exclude-pattern>
+
+    <!-- Customizations -->
+    <!-- Remove when https://github.com/djoos/Symfony2-coding-standard/pull/42/files is merged -->
+    <rule ref="Squiz.Strings.ConcatenationSpacing">
+            <properties>
+                <property name="ignoreNewlines" value="true"/>
+            </properties>
+    </rule>
+
 </ruleset>
