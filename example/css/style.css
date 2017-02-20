@@ -118,6 +118,9 @@ ol {
   padding-left:1.5em;
 }
 
+.msg {
+  font-weight: bold;
+}
 
 
 @media all and (orientation:portrait) {

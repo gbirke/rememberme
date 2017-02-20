@@ -14,13 +14,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - `ci` runs both `cs` and `test`
 
 ### Changed
+- `Authenticator::login` no longer returns bool/credentials. Instead, it returns a `LoginResult` instance that can be queried for the login state and the credentials from the remember me cookie. 
 - Rewritten example to use a picoframework
 - Update PHPUnit dependency to 5.7
 - Check in `composer.lock`
 - All classes that use the `StorageInterface` now have a `Storage` suffix. 
 
 ## Removed
-- `Authenticator::generateToken` If you've subclassed it with your own method, please create a `TokenInterface` implementation instead and pass it in as a dependency.
+- `Authenticator::generateToken` - If you've subclassed it with your own method, please create a `TokenInterface` implementation instead and pass it in as a dependency.
+- `Authenticatot::cookieIsValid` - The `login` function now gives more high-level information on the login result.
+- `Authenticatot::loginTokenWasInvalid` - Use `hasPossibleManipulation` method of `login` result object instead.
 
 ## 1.0.5 (2016-02-12)
 - Changed method for generating tokens to `random_bytes` instead of `uniquid`, with backwards compatibility library for PHP < 7.0. This'll improve **security** for new tokens.

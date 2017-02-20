@@ -80,9 +80,13 @@ storage on every page call by initializing the Authenticator class like this:
  ```
 
 ## Updating from Version 1.x
+The first you'll have to do is update the result checking of the `Authenticator::login` method. 
+It no longer returns a boolean/the credentials, but instead returns a result object that must 
+be queried for success, failure and credentials. See the example for how it is done. 
+
 If you did subclass `Authenticator` with a custom `createToken` method, you need to
 implement your token generation in a custom class that implements `TokenInterface` 
-and pass it as a constructor argument. Otherwise, there is nothing to do when updating.
+and pass it as a constructor argument.
 
 The less secure pseudo-random tokens of the old version will be replaced by more secure
 tokens whenever a login occurs. For better security (and less convenience of your users)

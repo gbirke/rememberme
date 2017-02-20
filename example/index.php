@@ -23,33 +23,39 @@ $rememberMe = new Authenticator($storage);
 $router = new Birke\Rememberme\Example\Router();
 
 $router->beforeEachRoute(function () use ($rememberMe) {
-    // If user is logged in, check if the remember me cookie is still ok
-    if (!empty($_SESSION['username'])) {
-        // Check, if the Rememberme cookie exists and is still valid.
-        // If not, we log out the current session
-        // This state can happen in two cases:
-        // a) The cookie is invalid because the triples were cleared after an attack or a "global logout"
-        // b) The cookie is invalid because the triples have expired
-        if (!$rememberMe->cookieIsValid()) {
-            $rememberMe->clearCookie();
-        }
-
-        return;
-    }
 
     $loginResult = $rememberMe->login();
-    if ($loginResult === false) {
-        if ($rememberMe->loginTokenWasInvalid()) {
-            render_template("cookie_was_stolen");
-            exit();
-        }
+
+    if ($loginResult->isSuccess()) {
+        $_SESSION['username'] = $loginResult->getCredential();
+        // There is a chance that an attacker has stolen the login token, so we store
+        // the fact that the user was logged in via RememberMe (instead of login form)
+        $_SESSION['remembered_by_cookie'] = true;
 
         return;
     }
-    $_SESSION['username'] = $loginResult;
-    // There is a chance that an attacker has stolen the login token, so we store
-    // the fact that the user was logged in via RememberMe (instead of login form)
-    $_SESSION['remembered_by_cookie'] = true;
+
+    if ($loginResult->hasPossibleManipulation()) {
+        render_template("cookie_was_stolen");
+        exit();
+    }
+
+    // Log out when tokens have expired and user is still logged in with remember me
+    // This state can happen in two cases:
+    // a) The triples were cleared after an attack or a "global logout"
+    // b) The triples have expired
+    if ($loginResult->isExpired() && !empty($_SESSION['username']) && !empty($_SESSION['remembered_by_cookie'])) {
+        $rememberMe->clearCookie();
+        unset($_SESSION['username']);
+        unset($_SESSION['remembered_by_cookie']);
+        render_template('login', 'You were logged out because the "Remember Me" cookie was no longer valid.');
+        exit;
+    }
+
+    if ($loginResult->isExpired() && !empty($_SESSION['username'])) {
+        // Do rate limiting here. Lots of requests for non-existing triplets can be an indicator of a brute force attack
+        sleep(5);
+    }
 });
 
 $router->route('!^/login$!', function () use ($rememberMe) {
@@ -68,7 +74,7 @@ $router->route('!^/login$!', function () use ($rememberMe) {
             }
             header("Location: /");
         } else {
-            render_template("login", "Invalid credentials");
+            render_template("login", "Invalid username or password, please try again.");
         }
     } else {
         render_template("login");

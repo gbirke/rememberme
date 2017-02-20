@@ -37,13 +37,6 @@ class Authenticator
     protected $expireTime = 604800;
 
     /**
-     * If the return from the storage was Birke\Rememberme\Storage\StorageInterface::TRIPLET_INVALID,
-     * this is set to true
-     * @var bool
-     */
-    protected $lastLoginTokenWasInvalid = false;
-
-    /**
      * If the login token was invalid, delete all login tokens of this user
      * @var bool
      */
@@ -88,17 +81,22 @@ class Authenticator
 
     /**
      * Check Credentials from cookie. Returns false if login was not successful, credential string if it was successful
-     * @return bool|string
+     * @return LoginResult
      */
     public function login()
     {
-        $triplet = Triplet::fromString($this->cookie->getValue());
+        $cookieValue = $this->cookie->getValue();
 
-        if (!$triplet->isValid()) {
-            return false;
+        if (!$cookieValue) {
+            return LoginResult::newNoCookieResult();
         }
 
-        $loginResult = false;
+        $triplet = Triplet::fromString($cookieValue);
+
+        if (!$triplet->isValid()) {
+            return LoginResult::newManipulationResult();
+        }
+
         if ($this->cleanExpiredTokensOnLogin) {
             $this->storage->cleanExpiredTokens(time() - $this->expireTime);
         }
@@ -119,41 +117,20 @@ class Authenticator
                     $expire
                 );
                 $this->cookie->setValue((string) $newTriplet);
-                $loginResult = $triplet->getCredential();
-                break;
+
+                return LoginResult::newSuccessResult($triplet->getCredential());
 
             case Storage\StorageInterface::TRIPLET_INVALID:
                 $this->cookie->deleteCookie();
-                $this->lastLoginTokenWasInvalid = true;
 
                 if ($this->cleanStoredTokensOnInvalidResult) {
                     $this->storage->cleanAllTriplets($triplet->getCredential());
                 }
 
-                break;
+                return LoginResult::newManipulationResult();
+            default:
+                return LoginResult::newExpiredResult();
         }
-
-        return $loginResult;
-    }
-
-    /**
-     * @return bool
-     */
-    public function cookieIsValid()
-    {
-        $triplet = Triplet::fromString($this->cookie->getValue());
-
-        if (!$triplet->isValid()) {
-            return false;
-        }
-
-        $state = $this->storage->findTriplet(
-            $triplet->getCredential(),
-            $triplet->getSaltedOneTimeToken($this->salt),
-            $triplet->getSaltedPersistentToken($this->salt)
-        );
-
-        return $state == Storage\StorageInterface::TRIPLET_FOUND;
     }
 
     /**
