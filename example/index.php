@@ -54,13 +54,15 @@ $router->beforeEachRoute(function () use ($rememberMe) {
 
 $router->route('!^/login$!', function () use ($rememberMe) {
     if (!empty($_POST)) {
+        $username = $_POST['username'];
+        $password = $_POST['password'];
         // In a real application you'd check the database if the username and password matches
-        if ($_POST['username'] === "demo" && $_POST['password'] === "demo") {
+        if ($username === "demo" && $password === "demo") {
             session_regenerate_id();
-            $_SESSION['username'] = "demo";
+            $_SESSION['username'] = $username;
             // If the user wants to be remembered, create Rememberme cookie
             if (!empty($_POST['rememberme'])) {
-                $rememberMe->createCookie('demo');
+                $rememberMe->createCookie($username);
             } else {
                 $rememberMe->clearCookie();
             }

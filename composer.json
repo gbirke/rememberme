@@ -1,6 +1,6 @@
 {
     "name": "birke/rememberme",
-    "version": "1.0.5",
+    "version": "2.0.0",
     "description": "Secure \"Remember Me\" functionality",
     "keywords": [ "cookie", "remember", "security"],
     "homepage": "https://github.com/gbirke/rememberme",

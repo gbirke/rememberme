@@ -1,21 +1,21 @@
-<p>You are logged in as <strong><?php echo $_SESSION['username']; ?></strong></p>
+<p xmlns="http://www.w3.org/1999/html">You are logged in as <strong><?php echo $_SESSION['username']; ?></strong></p>
 <p>Your session ID is  <strong><?php echo session_id(); ?></strong></p>
 
 <?php if (!empty($_COOKIE['REMEMBERME'])) : ?>
-        <p>The remember me cookie is active.
+        <p>The <strong>remember me cookie is active</strong>.
           Cookie value is <code><?php echo $_COOKIE['REMEMBERME']; ?></code></p>
         <p>Close the browser window and reopen it to test the "remember me" functionality.</p>
 <?php else : ?>
-        <p>The remember me cookie is not active.</p>
+        <p>The <strong>remember me cookie is not active</strong>.</p>
 <?php endif; ?>     
 
 <?php if (!empty($_SESSION['remembered_by_cookie'])) : ?>
-        <p>You were logged in with the "Remember me" cookie. In a real application
+        <p><strong>You were logged in with the "Remember me" cookie</strong>. In a real application
           you should ask the user for his credentials before allowing him anything
           "dangerous" like changing the login information, accessing sensitive data
           or making a payment.</p>
 <?php else : ?>
-    <p>You logged in through the login form, the "Remember me" cookie was not used for authentication.</p>
+    <p><strong>You logged in through the login form</strong>, the "Remember me" cookie was <em>not</em> used for authentication.</p>
 <?php endif; ?>
 
 
