@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.0 - Unreleased
+## 2.0 (2017-02-20)
 ### Added
 - `CookieInterface`
 - `TokenInterface` for different token generation methods
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `Authenticatot::cookieIsValid` - The `login` function now gives more high-level information on the login result.
 - `Authenticatot::loginTokenWasInvalid` - Use `hasPossibleManipulation` method of `login` result object instead.
 
-## 1.0.5 (2016-02-12)
+## 1.0.5 (2017-02-12)
 - Changed method for generating tokens to `random_bytes` instead of `uniquid`, with backwards compatibility library for PHP < 7.0. This'll improve **security** for new tokens.
 - Adjust tests to be ready for PHPUnit 5.7 
 
