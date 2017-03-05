@@ -24,7 +24,7 @@ class PDOStorage extends AbstractDBStorage
     {
         // We don't store the sha1 as binary values because otherwise we could not use
         // proper XML test data
-        $sql = "SELECT IF(SHA1(?) = {$this->tokenColumn}, 1, -1) AS token_match "."FROM {$this->tableName} WHERE {$this->credentialColumn} = ? "."AND {$this->persistentTokenColumn} = SHA1(?) AND {$this->expiresColumn} > NOW() LIMIT 1";
+        $sql = "SELECT CASE WHEN SHA1(?) = {$this->tokenColumn} THEN 1 ELSE -1 END AS token_match "."FROM {$this->tableName} WHERE {$this->credentialColumn} = ? "."AND {$this->persistentTokenColumn} = SHA1(?) AND {$this->expiresColumn} > NOW() LIMIT 1";
 
         $query = $this->connection->prepare($sql);
         $query->execute(array($token, $credential, $persistentToken));
