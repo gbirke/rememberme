@@ -3,6 +3,10 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.1 (2017-03-15)
+- Fix `PDOStorage` test. Test is still dependent on an existing MySQL database but at least it works again.
+- Hash database values in PHP instead of SQL.
+
 ## 2.0 (2017-02-20)
 ### Added
 - `CookieInterface`
