@@ -113,16 +113,16 @@
         },
         {
             "name": "escapestudios/symfony2-coding-standard",
-            "version": "2.9.1",
+            "version": "2.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/djoos/Symfony2-coding-standard.git",
-                "reference": "03bd93ece3dc004fd49e766bf546f8cf58c64cb8"
+                "reference": "938ef2bd7f45877458db7764686332829d86f449"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/djoos/Symfony2-coding-standard/zipball/03bd93ece3dc004fd49e766bf546f8cf58c64cb8",
-                "reference": "03bd93ece3dc004fd49e766bf546f8cf58c64cb8",
+                "url": "https://api.github.com/repos/djoos/Symfony2-coding-standard/zipball/938ef2bd7f45877458db7764686332829d86f449",
+                "reference": "938ef2bd7f45877458db7764686332829d86f449",
                 "shasum": ""
             },
             "require": {
@@ -145,17 +145,18 @@
                 },
                 {
                     "name": "Community contributors",
-                    "homepage": "https://github.com/escapestudios/Symfony2-coding-standard/graphs/contributors"
+                    "homepage": "https://github.com/djoos/Symfony2-coding-standard/graphs/contributors"
                 }
             ],
-            "description": "CodeSniffer ruleset for the Symfony2 coding standard",
-            "homepage": "https://github.com/escapestudios/Symfony2-coding-standard",
+            "description": "CodeSniffer ruleset for the Symfony 2+ coding standard",
+            "homepage": "https://github.com/djoos/Symfony2-coding-standard",
             "keywords": [
                 "Coding Standard",
                 "Symfony2",
-                "phpcs"
+                "phpcs",
+                "symfony"
             ],
-            "time": "2016-03-14 16:38:04"
+            "time": "2017-03-02 11:23:49"
         },
         {
             "name": "ircmaxell/random-lib",

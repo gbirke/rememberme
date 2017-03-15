@@ -22,18 +22,17 @@ class PDOStorage extends AbstractDBStorage
      */
     public function findTriplet($credential, $token, $persistentToken)
     {
-        // We don't store the sha1 as binary values because otherwise we could not use
-        // proper XML test data
-        $sql = "SELECT CASE WHEN SHA1(?) = {$this->tokenColumn} THEN 1 ELSE -1 END AS token_match "."FROM {$this->tableName} WHERE {$this->credentialColumn} = ? "."AND {$this->persistentTokenColumn} = SHA1(?) AND {$this->expiresColumn} > NOW() LIMIT 1";
+        $sql = "SELECT $this->tokenColumn as token FROM {$this->tableName} WHERE {$this->credentialColumn} = ? ".
+            "AND {$this->persistentTokenColumn} = ? AND {$this->expiresColumn} > NOW() LIMIT 1";
 
         $query = $this->connection->prepare($sql);
-        $query->execute(array($token, $credential, $persistentToken));
+        $query->execute(array($credential, sha1($persistentToken)));
 
         $result = $query->fetchColumn();
 
         if (!$result) {
             return self::TRIPLET_NOT_FOUND;
-        } elseif ($result == 1) {
+        } elseif ($result === sha1($token)) {
             return self::TRIPLET_FOUND;
         }
 
@@ -48,10 +47,12 @@ class PDOStorage extends AbstractDBStorage
      */
     public function storeTriplet($credential, $token, $persistentToken, $expire = 0)
     {
-        $sql = "INSERT INTO {$this->tableName}({$this->credentialColumn}, "."{$this->tokenColumn}, {$this->persistentTokenColumn}, "."{$this->expiresColumn}) VALUES(?, SHA1(?), SHA1(?), ?)";
+        $sql = "INSERT INTO {$this->tableName}({$this->credentialColumn}, ".
+            "{$this->tokenColumn}, {$this->persistentTokenColumn}, ".
+            "{$this->expiresColumn}) VALUES(?, ?, ?, ?)";
 
         $query = $this->connection->prepare($sql);
-        $query->execute(array($credential, $token, $persistentToken, date("Y-m-d H:i:s", $expire)));
+        $query->execute(array($credential, sha1($token), sha1($persistentToken), date("Y-m-d H:i:s", $expire)));
     }
 
     /**
@@ -60,10 +61,11 @@ class PDOStorage extends AbstractDBStorage
      */
     public function cleanTriplet($credential, $persistentToken)
     {
-        $sql = "DELETE FROM {$this->tableName} WHERE {$this->credentialColumn} = ? "."AND {$this->persistentTokenColumn} = SHA1(?)";
+        $sql = "DELETE FROM {$this->tableName} WHERE {$this->credentialColumn} = ? ".
+            "AND {$this->persistentTokenColumn} = ?";
 
         $query = $this->connection->prepare($sql);
-        $query->execute(array($credential, $persistentToken));
+        $query->execute(array($credential, sha1($persistentToken)));
     }
 
     /**
