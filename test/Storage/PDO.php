@@ -2,8 +2,10 @@
 /* 
  */
 
+use Birke\Rememberme\Storage\PDOStorage;
+use Birke\Rememberme\Storage\StorageInterface;
+
 require_once dirname(__FILE__).'/../bootstrap.php';
-require_once "PHPUnit/Extensions/Database/TestCase.php";
 
 /**
  * @author birke
@@ -18,7 +20,7 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
 
   /**
    *
-   * @var Rememberme_Storage_PDO
+   * @var Birke\Rememberme\Storage\PDOStorage
    */
   protected $storage;
 
@@ -32,12 +34,12 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
   protected $validDBPersistentToken = 'd27d330764ef61e99adf5d16f90b95a2a63c209a';
   protected $invalidDBToken = 'ec15fbc40cdff6a2050a1bcbbc1b2196222f13f4';
 
-  protected $expire = "2012-12-21 21:21:00";
-  protected $expireTS = 1356121260;
+  protected $expire = "2022-12-21 21:21:00";
+  protected $expireTS = 1671657660;
 
   protected function getConnection()
     {
-        $this->pdo = new PDO('mysql:host=localhost;dbname=test', 'webuser', '');
+        $this->pdo = new PDO('mysql:host=127.0.0.1;dbname=test', 'testuser', 'insecure');
         return $this->createDefaultDBConnection($this->pdo, 'test');
     }
  
@@ -48,7 +50,7 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
 
   protected function setUp() {
     parent::setUp();
-    $this->storage = new Rememberme_Storage_PDO(array(
+    $this->storage = new PDOStorage(array(
       'connection' => $this->pdo,
       'tableName' => 'tokens',
       'credentialColumn' => 'credential',
@@ -60,18 +62,18 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
 
   public function testFindTripletReturnsFoundIfDataMatches() {
     $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
-    $this->assertEquals(Rememberme_Storage_StorageInterface::TRIPLET_FOUND, $result);
+    $this->assertEquals(StorageInterface::TRIPLET_FOUND, $result);
   }
 
   public function testFindTripletReturnsNotFoundIfNoDataMatches() {
     $this->pdo->exec("TRUNCATE tokens");
     $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
-    $this->assertEquals(Rememberme_Storage_StorageInterface::TRIPLET_NOT_FOUND, $result);
+    $this->assertEquals(StorageInterface::TRIPLET_NOT_FOUND, $result);
   }
 
   public function testFindTripletReturnsInvalidTokenIfTokenIsInvalid() {
     $result = $this->storage->findTriplet($this->userid, $this->invalidToken, $this->validPersistentToken);
-    $this->assertEquals(Rememberme_Storage_StorageInterface::TRIPLET_INVALID, $result);
+    $this->assertEquals(StorageInterface::TRIPLET_INVALID, $result);
   }
 
   public function testStoreTripletSavesValuesIntoDatabase() {
