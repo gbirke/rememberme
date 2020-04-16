@@ -23,10 +23,10 @@ class PDOStorage extends AbstractDBStorage
     public function findTriplet($credential, $token, $persistentToken)
     {
         $sql = "SELECT $this->tokenColumn as token FROM {$this->tableName} WHERE {$this->credentialColumn} = ? ".
-            "AND {$this->persistentTokenColumn} = ? AND {$this->expiresColumn} > NOW() LIMIT 1";
+            "AND {$this->persistentTokenColumn} = ? AND {$this->expiresColumn} > ? LIMIT 1";
 
         $query = $this->connection->prepare($sql);
-        $query->execute(array($credential, sha1($persistentToken)));
+        $query->execute(array($credential, sha1($persistentToken), date("Y-m-d H:i:s")));
 
         $result = $query->fetchColumn();
 
