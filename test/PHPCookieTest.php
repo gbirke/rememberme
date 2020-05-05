@@ -10,7 +10,7 @@ namespace Birke\Rememberme\Cookie {
 
 namespace {
 
-	use Birke\Rememberme\Cookie\PHPCookie;
+    use Birke\Rememberme\Cookie\PHPCookie;
     use PHPUnit\Framework\TestCase;
 
     class PHPCookieTest extends TestCase
@@ -53,7 +53,8 @@ namespace {
             $this->assertEquals("testvalue", $_COOKIE["SET_TEST_1"]);
         }
 
-        public function testGetValueReturnsSuperglobal(){
+        public function testGetValueReturnsSuperglobal()
+        {
             $_COOKIE["GET_TEST_1"] = "testvalue";
             $cookie = new PHPCookie("GET_TEST_1");
             $this->assertEquals("testvalue", $cookie->getValue());
