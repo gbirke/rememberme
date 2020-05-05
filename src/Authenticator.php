@@ -1,16 +1,19 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme;
 
 use Birke\Rememberme\Cookie\CookieInterface;
 use Birke\Rememberme\Cookie\PHPCookie;
 use Birke\Rememberme\Token\DefaultToken;
 use Birke\Rememberme\Token\TokenInterface;
+use Exception;
 
 /**
  * Authenticate via "remember me" cookie
- *
- * @package Birke\Rememberme
  */
 class Authenticator
 {
@@ -63,11 +66,8 @@ class Authenticator
      * @param TokenInterface           $tokenGenerator
      * @param Cookie\CookieInterface   $cookie
      */
-    public function __construct(
-        Storage\StorageInterface $storage,
-        TokenInterface $tokenGenerator = null,
-        Cookie\CookieInterface $cookie = null
-    ) {
+    public function __construct(Storage\StorageInterface $storage, TokenInterface $tokenGenerator = null, Cookie\CookieInterface $cookie = null)
+    {
         if (is_null($tokenGenerator)) {
             $tokenGenerator = new DefaultToken();
         }
@@ -82,6 +82,8 @@ class Authenticator
     /**
      * Check Credentials from cookie. Returns false if login was not successful, credential string if it was successful
      * @return LoginResult
+     *
+     * @throws Exception
      */
     public function login()
     {
@@ -135,7 +137,10 @@ class Authenticator
 
     /**
      * @param mixed $credential
+     *
      * @return $this
+     *
+     * @throws Exception
      */
     public function createCookie($credential)
     {
@@ -173,6 +178,7 @@ class Authenticator
 
     /**
      * @param CookieInterface $cookie
+     *
      * @return $this
      */
     public function setCookie(CookieInterface $cookie)
@@ -180,14 +186,6 @@ class Authenticator
         $this->cookie = $cookie;
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function loginTokenWasInvalid()
-    {
-        return $this->lastLoginTokenWasInvalid;
     }
 
     /**
@@ -200,6 +198,7 @@ class Authenticator
 
     /**
      * @param bool $cleanStoredCookies
+     *
      * @return Authenticator
      */
     public function setCleanStoredTokensOnInvalidResult($cleanStoredCookies)
@@ -229,7 +228,7 @@ class Authenticator
     /**
      * @param int $expireTime How many seconds in the future the cookie will expire
      *
-     * Default is 604800 (1 week)
+     *                        Default is 604800 (1 week)
      *
      * @return Authenticator
      */

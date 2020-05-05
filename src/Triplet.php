@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme;
 
 /**
@@ -25,6 +29,7 @@ class Triplet
 
     /**
      * @param string $tripletString
+     *
      * @return Triplet
      */
     public static function fromString($tripletString)
@@ -72,6 +77,7 @@ class Triplet
 
     /**
      * @param string $salt
+     *
      * @return string
      */
     public function getSaltedPersistentToken($salt)
@@ -81,6 +87,7 @@ class Triplet
 
     /**
      * @param string $salt
+     *
      * @return string
      */
     public function getSaltedOneTimeToken($salt)

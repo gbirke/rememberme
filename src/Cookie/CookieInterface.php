@@ -1,12 +1,13 @@
 <?php
 
+/**
+ * @license MIT
+ */
 
 namespace Birke\Rememberme\Cookie;
 
 /**
  * Classes with this interface are responsible for interacting with the PHP cookie infrastructure
- *
- * @package Birke\Cookie
  */
 interface CookieInterface
 {

@@ -1,11 +1,13 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme;
 
 /**
  * Represents the current state of the "Remember me" login.
- *
- * @package Birke\Rememberme
  */
 class LoginResult
 {
@@ -32,6 +34,7 @@ class LoginResult
      * Create new successful result with credentials
      *
      * @param mixed $credential
+     *
      * @return LoginResult
      */
     public static function newSuccessResult($credential)

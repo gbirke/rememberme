@@ -66,7 +66,7 @@ $router->route('!^/login$!', function () use ($rememberMe) {
     $username = $_POST['username'];
     $password = $_POST['password'];
     // In a real application you'd check the database if the username and password matches
-    if ($username === "demo" && $password === "demo") {
+    if ("demo" === $username && "demo" === $password) {
         session_regenerate_id();
         $_SESSION['username'] = $username;
 

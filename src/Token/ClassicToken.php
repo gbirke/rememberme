@@ -1,9 +1,7 @@
 <?php
+
 /**
- * Created by PhpStorm.
- * User: gbirke
- * Date: 22.07.15
- * Time: 21:26
+ * @license MIT
  */
 
 namespace Birke\Rememberme\Token;
@@ -12,8 +10,6 @@ namespace Birke\Rememberme\Token;
  * Generate an insecure token with the uniqid function.
  *
  * This is only for backwards compatibility with Version 1.
- *
- * @package Birke\Rememberme\Token
  */
 class ClassicToken implements TokenInterface
 {

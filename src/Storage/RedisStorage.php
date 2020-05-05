@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme\Storage;
 
 /**
@@ -34,6 +38,7 @@ class Redis implements StorageInterface
      * @param mixed  $credential
      * @param string $token
      * @param string $persistentToken
+     *
      * @return int
      */
     public function findTriplet($credential, $token, $persistentToken)
@@ -49,7 +54,7 @@ class Redis implements StorageInterface
 
         $redisToken = trim($this->client->get($key));
 
-        if ($redisToken == $token) {
+        if ($redisToken === $token) {
             return self::TRIPLET_FOUND;
         }
 
@@ -61,6 +66,7 @@ class Redis implements StorageInterface
      * @param string $token
      * @param string $persistentToken
      * @param int    $expire
+     *
      * @return $this
      */
     public function storeTriplet($credential, $token, $persistentToken, $expire = 0)
@@ -119,6 +125,7 @@ class Redis implements StorageInterface
      * Remove all expired triplets of all users.
      *
      * @param int $expiryTime Timestamp, all tokens before this time will be deleted
+     *
      * @return void
      */
     public function cleanExpiredTokens($expiryTime)
@@ -129,6 +136,7 @@ class Redis implements StorageInterface
     /**
      * @param string $credential
      * @param string $persistentToken
+     *
      * @return string
      */
     protected function getKeyname($credential, $persistentToken)

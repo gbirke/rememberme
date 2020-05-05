@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme\Cookie;
 
 /**
@@ -63,6 +67,7 @@ class PHPCookie implements CookieInterface
 
     /**
      * @inheritdoc
+     *
      * @param string $value
      */
     public function setValue($value)
@@ -74,6 +79,7 @@ class PHPCookie implements CookieInterface
 
     /**
      * @inheritdoc
+     *
      * @return string
      */
     public function getValue()

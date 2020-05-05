@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme\Storage;
 
 /**
@@ -31,6 +35,7 @@ class FileStorage implements StorageInterface
      * @param mixed  $credential
      * @param string $token
      * @param string $persistentToken
+     *
      * @return int
      */
     public function findTriplet($credential, $token, $persistentToken)
@@ -46,7 +51,7 @@ class FileStorage implements StorageInterface
 
         $fileToken = trim(file_get_contents($fn));
 
-        if ($fileToken == $token) {
+        if ($fileToken === $token) {
             return self::TRIPLET_FOUND;
         }
 
@@ -58,6 +63,7 @@ class FileStorage implements StorageInterface
      * @param string $token
      * @param string $persistentToken
      * @param int    $expire
+     *
      * @return $this
      */
     public function storeTriplet($credential, $token, $persistentToken, $expire)
@@ -112,6 +118,7 @@ class FileStorage implements StorageInterface
      * Remove all expired triplets of all users.
      *
      * @param int $expiryTime Timestamp, all tokens before this time will be deleted
+     *
      * @return void
      */
     public function cleanExpiredTokens($expiryTime)
@@ -126,6 +133,7 @@ class FileStorage implements StorageInterface
     /**
      * @param $credential
      * @param $persistentToken
+     *
      * @return string
      */
     protected function getFilename($credential, $persistentToken)
