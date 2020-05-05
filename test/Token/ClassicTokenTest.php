@@ -1,15 +1,24 @@
 <?php
 
-class ClassicTokenTest extends PHPUnit_Framework_TestCase {
+/**
+ * @license MIT
+ */
+
+namespace Birke\Rememberme\Test;
+
+use Birke\Rememberme\Token\ClassicToken;
+use PHPUnit\Framework\TestCase;
+
+class ClassicTokenTest extends TestCase {
 
     /**
-     * @var \Birke\Rememberme\Token\ClassicToken
+     * @var ClassicToken
      */
     protected $token;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->token = new \Birke\Rememberme\Token\ClassicToken();
+        $this->token = new ClassicToken();
     }
 
     public function testTokenIs32CharsInHexadecimal()

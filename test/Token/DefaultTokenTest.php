@@ -1,8 +1,15 @@
 <?php
 
-use Birke\Rememberme\Token\DefaultToken;
+/**
+ * @license MIT
+ */
 
-class DefaultTokenTest extends PHPUnit_Framework_TestCase {
+namespace Birke\Rememberme\Test;
+
+use Birke\Rememberme\Token\DefaultToken;
+use PHPUnit\Framework\TestCase;
+
+class DefaultTokenTest extends TestCase {
 
     public function testDefaultTokenReturns32CharsInHexadecimal(){
         $token = new DefaultToken();
