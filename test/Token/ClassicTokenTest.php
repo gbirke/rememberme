@@ -9,7 +9,8 @@ namespace Birke\Rememberme\Test;
 use Birke\Rememberme\Token\ClassicToken;
 use PHPUnit\Framework\TestCase;
 
-class ClassicTokenTest extends TestCase {
+class ClassicTokenTest extends TestCase
+{
 
     /**
      * @var ClassicToken
