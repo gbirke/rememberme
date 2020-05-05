@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme\Example;
 
 /**
@@ -48,6 +52,7 @@ class Router
      * Match URI to route definition and call it
      *
      * @param string $uri
+     *
      * @return mixed
      */
     public function execute($uri)
@@ -58,9 +63,9 @@ class Router
                 array_shift($params);
 
                 return call_user_func_array($callback, array_values($params));
-            } else {
-                error_log("$pattern did not match $uri");
             }
+
+            error_log("$pattern did not match $uri");
         }
     }
 }

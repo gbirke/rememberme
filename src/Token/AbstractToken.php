@@ -1,13 +1,14 @@
 <?php
 
+/**
+ * @license MIT
+ */
 namespace Birke\Rememberme\Token;
 
 /**
  * Common utility class for tokens
  *
  * It can output tokens in different lengths and formats - raw bytes, hexadecimal and base64
- *
- * @package Birke\Rememberme\Token
  */
 abstract class AbstractToken implements TokenInterface
 {
@@ -32,6 +33,11 @@ abstract class AbstractToken implements TokenInterface
         $this->tokenFormat = $tokenFormat;
     }
 
+    /**
+     * @param string $token
+     *
+     * @return string
+     */
     protected function formatBytes($token)
     {
         switch ($this->tokenFormat) {

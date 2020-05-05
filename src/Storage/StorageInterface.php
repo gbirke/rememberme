@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @license MIT
+ */
 namespace Birke\Rememberme\Storage;
 
 /**
@@ -20,6 +23,7 @@ interface StorageInterface
      * @param mixed  $credential      Unique credential (user id, email address, user name)
      * @param string $token           One-Time Token
      * @param string $persistentToken Persistent Token
+     *
      * @return int
      */
     public function findTriplet($credential, $token, $persistentToken);
@@ -49,8 +53,10 @@ interface StorageInterface
      * Remove one triplet of the user from the store
      *
      * @abstract
+     *
      * @param mixed  $credential
      * @param string $persistentToken
+     *
      * @return void
      */
     public function cleanTriplet($credential, $persistentToken);
@@ -59,7 +65,9 @@ interface StorageInterface
      * Remove all triplets of a user, effectively logging him out on all machines
      *
      * @abstract
+     *
      * @param mixed $credential
+     *
      * @return void
      */
     public function cleanAllTriplets($credential);
@@ -68,7 +76,9 @@ interface StorageInterface
      * Remove all expired triplets of all users.
      *
      * @abstract
+     *
      * @param int $expiryTime Timestamp, all tokens before this time will be deleted
+     *
      * @return void
      */
     public function cleanExpiredTokens($expiryTime);

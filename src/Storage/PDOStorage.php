@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme\Storage;
+
+use PDO;
+use PDOException;
 
 /**
  * Store login tokens in database with PDO class
@@ -10,7 +17,7 @@ namespace Birke\Rememberme\Storage;
 class PDOStorage extends AbstractDBStorage
 {
     /**
-     * @var \PDO
+     * @var PDO
      */
     protected $connection;
 
@@ -18,6 +25,7 @@ class PDOStorage extends AbstractDBStorage
      * @param mixed  $credential
      * @param string $token
      * @param string $persistentToken
+     *
      * @return int
      */
     public function findTriplet($credential, $token, $persistentToken)
@@ -32,7 +40,9 @@ class PDOStorage extends AbstractDBStorage
 
         if (!$result) {
             return self::TRIPLET_NOT_FOUND;
-        } elseif ($result === sha1($token)) {
+        }
+
+        if (sha1($token) === $result) {
             return self::TRIPLET_FOUND;
         }
 
@@ -74,6 +84,8 @@ class PDOStorage extends AbstractDBStorage
      * @param string $token
      * @param string $persistentToken
      * @param int    $expire
+     *
+     * @throws PDOException
      */
     public function replaceTriplet($credential, $token, $persistentToken, $expire = 0)
     {
@@ -82,7 +94,7 @@ class PDOStorage extends AbstractDBStorage
             $this->cleanTriplet($credential, $persistentToken);
             $this->storeTriplet($credential, $token, $persistentToken, $expire);
             $this->connection->commit();
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->connection->rollBack();
             throw $e;
         }
@@ -103,6 +115,7 @@ class PDOStorage extends AbstractDBStorage
      * Remove all expired triplets of all users.
      *
      * @param int $expiryTime Timestamp, all tokens before this time will be deleted
+     *
      * @return void
      */
     public function cleanExpiredTokens($expiryTime)
@@ -115,7 +128,7 @@ class PDOStorage extends AbstractDBStorage
 
 
     /**
-     * @return \PDO
+     * @return PDO
      */
     public function getConnection()
     {
@@ -123,9 +136,9 @@ class PDOStorage extends AbstractDBStorage
     }
 
     /**
-     * @param \PDO $connection
+     * @param PDO $connection
      */
-    public function setConnection(\PDO $connection)
+    public function setConnection(PDO $connection)
     {
         $this->connection = $connection;
     }

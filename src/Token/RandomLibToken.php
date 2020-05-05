@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme\Token;
 
 use RandomLib\Factory;
@@ -7,8 +11,6 @@ use RandomLib\Generator;
 
 /**
  * A token class that uses ircmaxell/random-lib to generate secure random tokens
- *
- * @package Birke\Rememberme\Token
  */
 class RandomLibToken extends AbstractToken
 {

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 namespace Birke\Rememberme\Storage;
 
 /**
@@ -63,6 +67,7 @@ abstract class AbstractDBStorage implements StorageInterface
 
     /**
      * @param string $tableName
+     *
      * @return $this
      */
     public function setTableName($tableName)
@@ -82,6 +87,7 @@ abstract class AbstractDBStorage implements StorageInterface
 
     /**
      * @param string $credentialColumn
+     *
      * @return $this
      */
     public function setCredentialColumn($credentialColumn)
@@ -101,6 +107,7 @@ abstract class AbstractDBStorage implements StorageInterface
 
     /**
      * @param string $tokenColumn
+     *
      * @return $this
      */
     public function setTokenColumn($tokenColumn)
@@ -120,6 +127,7 @@ abstract class AbstractDBStorage implements StorageInterface
 
     /**
      * @param string $persistentTokenColumn
+     *
      * @return $this
      */
     public function setPersistentTokenColumn($persistentTokenColumn)
@@ -139,6 +147,7 @@ abstract class AbstractDBStorage implements StorageInterface
 
     /**
      * @param string $expiresColumn
+     *
      * @return $this
      */
     public function setExpiresColumn($expiresColumn)
