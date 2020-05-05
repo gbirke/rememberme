@@ -1,21 +1,19 @@
 <?php
 
+/**
+ * @license MIT
+ */
+
 use Birke\Rememberme\Token\RandomLibToken;
+use PHPUnit\Framework\TestCase;
 
-class RandomLibTokenTest extends PHPUnit_Framework_TestCase {
+class RandomLibTokenTest extends TestCase {
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!class_exists('RandomLib\Factory')) {
             $this->markTestSkipped(
                 'The RandomLib library is not available.'
-            );
-        }
-
-        // TODO: Remove this check when RandomLib works with PHP >= 7.1 again
-        if (version_compare(PHP_VERSION, '7.1', '>=')) {
-            $this->markTestSkipped(
-                'RandomLib library is not compatible with PHP PHP >= 7.1.'
             );
         }
     }

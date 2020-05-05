@@ -4,13 +4,23 @@
 
 use Birke\Rememberme\Storage\PDOStorage;
 use Birke\Rememberme\Storage\StorageInterface;
-
-require_once dirname(__FILE__).'/../bootstrap.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * @author birke
  */
-class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
+class PDOTest extends TestCase {
+
+  private const CREATE_DB = <<<CRDB
+CREATE TABLE "tokens" (
+	"credential"	TEXT NOT NULL,
+	"token"	TEXT NOT NULL,
+	"persistent_token"	INTEGER NOT NULL,
+	"expires"	TEXT NOT NULL,
+	PRIMARY KEY("credential","persistent_token","expires")
+) WITHOUT ROWID
+CRDB;
+
 
   /**
    *
@@ -37,19 +47,9 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
   protected $expire = "2022-12-21 21:21:00";
   protected $expireTS = 1671657660;
 
-  protected function getConnection()
-    {
-        $this->pdo = new PDO('mysql:host=127.0.0.1;dbname=test', 'testuser', 'insecure');
-        return $this->createDefaultDBConnection($this->pdo, 'test');
-    }
- 
-    protected function getDataSet()
-    {
-        return $this->createFlatXMLDataSet(dirname(__FILE__).'/tokens.xml');
-    }
-
-  protected function setUp() {
-    parent::setUp();
+  protected function setUp(): void {
+    $this->pdo = new PDO('sqlite::memory:');
+    $this->pdo->exec(self::CREATE_DB);
     $this->storage = new PDOStorage(array(
       'connection' => $this->pdo,
       'tableName' => 'tokens',
@@ -61,6 +61,7 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
   }
 
   public function testFindTripletReturnsFoundIfDataMatches() {
+    $this->insertFixtures();
     $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
     $this->assertEquals(StorageInterface::TRIPLET_FOUND, $result);
   }
@@ -72,12 +73,12 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
   }
 
   public function testFindTripletReturnsInvalidTokenIfTokenIsInvalid() {
+    $this->insertFixtures();
     $result = $this->storage->findTriplet($this->userid, $this->invalidToken, $this->validPersistentToken);
     $this->assertEquals(StorageInterface::TRIPLET_INVALID, $result);
   }
 
   public function testStoreTripletSavesValuesIntoDatabase() {
-    $this->pdo->exec("TRUNCATE tokens");
     $this->storage->storeTriplet($this->userid, $this->validToken, $this->validPersistentToken, $this->expireTS);
     $result = $this->pdo->query("SELECT credential,token,persistent_token, expires FROM tokens");
     $row = $result->fetch(PDO::FETCH_NUM);
@@ -86,14 +87,21 @@ class Rememberme_Storage_PDOTest extends PHPUnit_Extensions_Database_TestCase {
   }
 
   public function testCleanTripletRemovesEntryFromDatabase() {
+    $this->insertFixtures();
     $this->storage->cleanTriplet($this->userid, $this->validPersistentToken);
     $this->assertEquals(0, $this->pdo->query("SELECT COUNT(*) FROM tokens")->fetchColumn());
   }
 
   public function testCleanAllTripletsRemovesAllEntriesWithMatchingCredentialsFromDatabase() {
+    $this->insertFixtures();
     $this->pdo->exec("INSERT INTO tokens VALUES ('{$this->userid}', 'dummy', 'dummy', NOW())");
     $this->storage->cleanAllTriplets($this->userid);
     $this->assertEquals(0, $this->pdo->query("SELECT COUNT(*) FROM tokens")->fetchColumn());
+  }
+
+  private function insertFixtures()
+  {
+    $this->pdo->exec("INSERT INTO tokens (credential, token, persistent_token, expires) VALUES ('test', 'e0e6d29addce0fbdd0f845799be7d0395ed087c3', 'd27d330764ef61e99adf5d16f90b95a2a63c209a', '2035-12-21 21:21:00')");
   }
 
 }

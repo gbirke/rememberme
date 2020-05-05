@@ -11,8 +11,9 @@ namespace Birke\Rememberme\Cookie {
 namespace {
 
 	use Birke\Rememberme\Cookie\PHPCookie;
+    use PHPUnit\Framework\TestCase;
 
-	class PHPCookieTest extends PHPUnit_Framework_TestCase
+    class PHPCookieTest extends TestCase
     {
         public function testDefaultValues()
         {
