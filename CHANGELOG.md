@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0 (2020-05-05)
+- Drop PHP support for versions < 7.2
+- Upgrade PHPUnit and PHP Code Sniffer
+- Upgrade to Symfony Coding Standard 3.x
+- Make `PDOStorageTest` independent from MySQL by using an in-memory database.
+- Create date in PHP instead of using the `NOW()` SQL function.
+- Add example SQL statements 
+
 ## 2.0.1 (2017-03-15)
 - Fix `PDOStorage` test. Test is still dependent on an existing MySQL database but at least it works again.
 - Hash database values in PHP instead of SQL.
