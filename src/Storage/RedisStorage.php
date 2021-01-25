@@ -11,7 +11,7 @@ namespace Birke\Rememberme\Storage;
  *
  * @author Michaël Thieulin
  */
-class Redis extends AbstractStorage
+class RedisStorage extends AbstractStorage
 {
     /**
      * @var Predis\Client
