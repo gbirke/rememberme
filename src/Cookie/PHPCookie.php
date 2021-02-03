@@ -47,6 +47,11 @@ class PHPCookie implements CookieInterface
     protected $httpOnly = true;
 
     /**
+     * @var string
+     */
+    protected $sameSite = "Lax";
+
+    /**
      * PHPCookie constructor.
      * @param string $name
      * @param int    $expireTime
@@ -54,8 +59,9 @@ class PHPCookie implements CookieInterface
      * @param string $domain
      * @param bool   $secure
      * @param bool   $httpOnly
+     * @param string $sameSite   'None', 'Lax', or 'Strict'
      */
-    public function __construct($name = "REMEMBERME", $expireTime = 604800, $path = "/", $domain = "", $secure = false, $httpOnly = true)
+    public function __construct($name = "REMEMBERME", $expireTime = 604800, $path = "/", $domain = "", $secure = false, $httpOnly = true, $sameSite = "Lax")
     {
         $this->name = $name;
         $this->expireTime = $expireTime;
@@ -63,6 +69,11 @@ class PHPCookie implements CookieInterface
         $this->domain = $domain;
         $this->secure = $secure;
         $this->httpOnly = $httpOnly;
+        $this->setSameSite($sameSite);
+
+        if ($this->sameSite === "None" && !$this->secure) {
+            trigger_error("Some browsers will reject non-secure Cookies with SameSite=None.", E_USER_NOTICE);
+        }
     }
 
     /**
@@ -74,7 +85,14 @@ class PHPCookie implements CookieInterface
     {
         $expire = time() + $this->expireTime;
         $_COOKIE[$this->name] = $value;
-        setcookie($this->name, $value, $expire, $this->path, $this->domain, $this->secure, $this->httpOnly);
+        setcookie($this->name, $value, [
+            'expires'  => $expire,
+            'path'     => $this->path,
+            'domain'   => $this->domain,
+            'secure'   => $this->secure,
+            'httponly' => $this->httpOnly,
+            'samesite' => $this->sameSite,
+        ]);
     }
 
     /**
@@ -94,7 +112,14 @@ class PHPCookie implements CookieInterface
     {
         $expire = time() - $this->expireTime;
         unset($_COOKIE[$this->name]);
-        setcookie($this->name, "", $expire, $this->path, $this->domain, $this->secure, $this->httpOnly);
+        setcookie($this->name, "", [
+            'expires'  => $expire,
+            'path'     => $this->path,
+            'domain'   => $this->domain,
+            'secure'   => $this->secure,
+            'httponly' => $this->httpOnly,
+            'samesite' => $this->sameSite,
+        ]);
     }
 
     /**
@@ -191,5 +216,25 @@ class PHPCookie implements CookieInterface
     public function setHttpOnly($httponly)
     {
         $this->httpOnly = $httponly;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSameSite()
+    {
+        return $this->sameSite;
+    }
+
+    /**
+     * @param string $sameSite
+     */
+    public function setSameSite($sameSite)
+    {
+        $sameSite = ucfirst($sameSite);
+        if (!in_array($sameSite, ["None", "Lax", "Strict"])) {
+            throw new \InvalidArgumentException('SameSite must be one of "None", "Lax" or "Strict".');
+        }
+        $this->sameSite = $sameSite;
     }
 }
