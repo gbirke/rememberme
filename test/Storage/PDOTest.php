@@ -3,7 +3,7 @@
  */
 
 use Birke\Rememberme\Storage\PDOStorage;
-use Birke\Rememberme\Storage\StorageInterface;
+use Birke\Rememberme\Storage\AbstractStorage;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -66,21 +66,21 @@ CRDB;
     {
         $this->insertFixtures();
         $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
-        $this->assertEquals(StorageInterface::TRIPLET_FOUND, $result);
+        $this->assertEquals(AbstractStorage::TRIPLET_FOUND, $result);
     }
 
     public function testFindTripletReturnsNotFoundIfNoDataMatches()
     {
         $this->pdo->exec("TRUNCATE tokens");
         $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
-        $this->assertEquals(StorageInterface::TRIPLET_NOT_FOUND, $result);
+        $this->assertEquals(AbstractStorage::TRIPLET_NOT_FOUND, $result);
     }
 
     public function testFindTripletReturnsInvalidTokenIfTokenIsInvalid()
     {
         $this->insertFixtures();
         $result = $this->storage->findTriplet($this->userid, $this->invalidToken, $this->validPersistentToken);
-        $this->assertEquals(StorageInterface::TRIPLET_INVALID, $result);
+        $this->assertEquals(AbstractStorage::TRIPLET_INVALID, $result);
     }
 
     public function testStoreTripletSavesValuesIntoDatabase()
