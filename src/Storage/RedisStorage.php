@@ -26,7 +26,7 @@ class RedisStorage extends AbstractStorage
 
     /**
      * @param \Predis\Client $client
-     * @param string        $keyPrefix
+     * @param string         $keyPrefix
      */
     public function __construct(\Predis\Client $client, $keyPrefix = 'rememberme')
     {
