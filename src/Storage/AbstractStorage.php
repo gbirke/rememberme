@@ -18,6 +18,11 @@ abstract class AbstractStorage
     const TRIPLET_INVALID = -1;
 
     /**
+     * @var string
+     */
+    protected $hashAlgo = 'sha1';
+
+    /**
      * Return Tri-state value constant
      *
      * @param mixed  $credential      Unique credential (user id, email address, user name)
@@ -84,12 +89,31 @@ abstract class AbstractStorage
     abstract public function cleanExpiredTokens($expiryTime);
 
     /**
+     * @return string
+     */
+    public function getHashAlgo(): string
+    {
+        return $this->hashAlgo;
+    }
+
+    /**
+     * @param string $hashAlgo
+     */
+    public function setHashAlgo(string $hashAlgo): void
+    {
+        if (!in_array($hashAlgo, hash_hmac_algos())) {
+            throw new \InvalidArgumentException("Hash algorithm \"{$hashAlgo}\" is not supported.");
+        }
+        $this->hashAlgo = $hashAlgo;
+    }
+
+    /**
      * @param string $value
      *
      * @return string
      */
     protected function hash($value)
     {
-        return sha1($value);
+        return hash($this->hashAlgo, $value);
     }
 }

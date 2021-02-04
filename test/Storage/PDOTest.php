@@ -109,6 +109,6 @@ CRDB;
 
     private function insertFixtures()
     {
-        $this->pdo->exec("INSERT INTO tokens (credential, token, persistent_token, expires) VALUES ('test', 'e0e6d29addce0fbdd0f845799be7d0395ed087c3', 'd27d330764ef61e99adf5d16f90b95a2a63c209a', '2035-12-21 21:21:00')");
+        $this->pdo->exec("INSERT INTO tokens (credential, token, persistent_token, expires) VALUES ('test', '{$this->validDBToken}', '{$this->validDBPersistentToken}', '2035-12-21 21:21:00')");
     }
 }
