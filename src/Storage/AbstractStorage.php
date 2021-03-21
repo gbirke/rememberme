@@ -6,16 +6,21 @@
 namespace Birke\Rememberme\Storage;
 
 /**
- * This interface is for storing the credential/token/persistentToken triplets
+ * This abstract class is for storing the credential/token/persistentToken triplets
  *
  * IMPORTANT SECURITY NOTICE: The storage should not store the token values in the clear.
  * Always use a secure hash function!
  */
-interface StorageInterface
+abstract class AbstractStorage
 {
     const TRIPLET_FOUND = 1;
     const TRIPLET_NOT_FOUND = 0;
     const TRIPLET_INVALID = -1;
+
+    /**
+     * @var string
+     */
+    protected $hashAlgo = 'sha1';
 
     /**
      * Return Tri-state value constant
@@ -26,7 +31,7 @@ interface StorageInterface
      *
      * @return int
      */
-    public function findTriplet($credential, $token, $persistentToken);
+    abstract public function findTriplet($credential, $token, $persistentToken);
 
     /**
      * Store the new token for the credential and the persistent token.
@@ -38,7 +43,7 @@ interface StorageInterface
      * @param string $persistentToken
      * @param int    $expire          Timestamp when this triplet will expire
      */
-    public function storeTriplet($credential, $token, $persistentToken, $expire);
+    abstract public function storeTriplet($credential, $token, $persistentToken, $expire);
 
     /**
      * Replace current token after successful authentication
@@ -47,7 +52,7 @@ interface StorageInterface
      * @param string $persistentToken
      * @param int    $expire
      */
-    public function replaceTriplet($credential, $token, $persistentToken, $expire);
+    abstract public function replaceTriplet($credential, $token, $persistentToken, $expire);
 
     /**
      * Remove one triplet of the user from the store
@@ -59,7 +64,7 @@ interface StorageInterface
      *
      * @return void
      */
-    public function cleanTriplet($credential, $persistentToken);
+    abstract public function cleanTriplet($credential, $persistentToken);
 
     /**
      * Remove all triplets of a user, effectively logging him out on all machines
@@ -70,7 +75,7 @@ interface StorageInterface
      *
      * @return void
      */
-    public function cleanAllTriplets($credential);
+    abstract public function cleanAllTriplets($credential);
 
     /**
      * Remove all expired triplets of all users.
@@ -81,5 +86,34 @@ interface StorageInterface
      *
      * @return void
      */
-    public function cleanExpiredTokens($expiryTime);
+    abstract public function cleanExpiredTokens($expiryTime);
+
+    /**
+     * @return string
+     */
+    public function getHashAlgo(): string
+    {
+        return $this->hashAlgo;
+    }
+
+    /**
+     * @param string $hashAlgo
+     */
+    public function setHashAlgo(string $hashAlgo): void
+    {
+        if (!in_array($hashAlgo, hash_hmac_algos())) {
+            throw new \InvalidArgumentException("Hash algorithm \"{$hashAlgo}\" is not supported.");
+        }
+        $this->hashAlgo = $hashAlgo;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function hash($value)
+    {
+        return hash($this->hashAlgo, $value);
+    }
 }

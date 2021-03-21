@@ -11,7 +11,7 @@ namespace Birke\Rememberme\Storage;
  *
  * @author Michaël Thieulin
  */
-class Redis implements StorageInterface
+class Redis extends AbstractStorage
 {
     /**
      * @var Predis\Client
@@ -44,8 +44,8 @@ class Redis implements StorageInterface
     public function findTriplet($credential, $token, $persistentToken)
     {
         // Hash the tokens, because they can contain a salt and can be accessed in redis
-        $persistentToken = sha1($persistentToken);
-        $token = sha1($token);
+        $persistentToken = $this->hash($persistentToken);
+        $token = $this->hash($token);
         $key = $this->getKeyname($credential, $persistentToken);
 
         if ($this->client->exists($key) === 0) {
@@ -72,8 +72,8 @@ class Redis implements StorageInterface
     public function storeTriplet($credential, $token, $persistentToken, $expire = 0)
     {
         // Hash the tokens, because they can contain a salt and can be accessed in redis
-        $persistentToken = sha1($persistentToken);
-        $token = sha1($token);
+        $persistentToken = $this->hash($persistentToken);
+        $token = $this->hash($token);
         $key = $this->getKeyname($credential, $persistentToken);
         $this->client->set($key, $token);
 
@@ -103,7 +103,7 @@ class Redis implements StorageInterface
      */
     public function cleanTriplet($credential, $persistentToken)
     {
-        $persistentToken = sha1($persistentToken);
+        $persistentToken = $this->hash($persistentToken);
         $key = $this->getKeyname($credential, $persistentToken);
 
         if ($this->client->exists($key) === 1) {

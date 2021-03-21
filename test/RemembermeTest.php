@@ -1,7 +1,7 @@
 <?php
 
 use Birke\Rememberme\Cookie\CookieInterface;
-use Birke\Rememberme\Storage\StorageInterface;
+use Birke\Rememberme\Storage\AbstractStorage;
 use PHPUnit\Framework\TestCase;
 
 class RemembermeTest extends TestCase
@@ -28,7 +28,7 @@ class RemembermeTest extends TestCase
 
     function setUp(): void
     {
-        $this->storage = $this->getMockBuilder(StorageInterface::class)->getMock();
+        $this->storage = $this->getMockBuilder(AbstractStorage::class)->getMock();
         $this->rememberme = new Birke\Rememberme\Authenticator($this->storage);
 
         $this->cookie = $this->getMockBuilder(CookieInterface::class)
@@ -83,7 +83,7 @@ class RemembermeTest extends TestCase
 
         $this->storage->expects($this->once())
         ->method("findTriplet")
-        ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
+        ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_FOUND));
         $this->assertTrue($this->rememberme->login()->isSuccess());
     }
 
@@ -97,7 +97,7 @@ class RemembermeTest extends TestCase
 
         $this->storage->expects($this->once())
             ->method("findTriplet")
-            ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
+            ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_FOUND));
         $this->assertEquals($this->userid, $this->rememberme->login()->getCredential());
     }
 
@@ -108,7 +108,7 @@ class RemembermeTest extends TestCase
         $this->cookie->method("getValue")->willReturn($oldcookieValue);
         $this->storage->expects($this->once())
         ->method("findTriplet")
-        ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
+        ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_FOUND));
         $this->cookie->expects($this->once())
         ->method("setValue")
         ->with(
@@ -129,7 +129,7 @@ class RemembermeTest extends TestCase
         )));
         $this->storage->expects($this->once())
         ->method("findTriplet")
-        ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
+        ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_FOUND));
         $this->storage->expects($this->once())
         ->method("replaceTriplet")
         ->with(
@@ -152,7 +152,7 @@ class RemembermeTest extends TestCase
         )));
         $this->storage->expects($this->once())
         ->method("findTriplet")
-        ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
+        ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_FOUND));
         $this->cookie->expects($this->once())
         ->method("setValue")
         ->with(
@@ -168,7 +168,7 @@ class RemembermeTest extends TestCase
         $this->cookie->method("getValue")->willReturn($oldcookieValue);
         $this->storage->expects($this->once())
         ->method("findTriplet")
-        ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
+        ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_FOUND));
         $this->cookie->expects($this->once())
         ->method("setValue")
         ->with(
@@ -188,7 +188,7 @@ class RemembermeTest extends TestCase
         $this->userid, $this->validToken, $this->validPersistentToken, )));
         $this->storage->expects($this->once())
           ->method("findTriplet")
-          ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_NOT_FOUND));
+          ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_NOT_FOUND));
 
         $result = $this->rememberme->login();
 
@@ -202,7 +202,7 @@ class RemembermeTest extends TestCase
         $this->userid, $this->invalidToken, $this->validPersistentToken, )));
         $this->storage->expects($this->once())
           ->method("findTriplet")
-          ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_INVALID));
+          ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_INVALID));
 
         $result = $this->rememberme->login();
 
@@ -216,7 +216,7 @@ class RemembermeTest extends TestCase
         $this->userid, $this->invalidToken, $this->validPersistentToken, )));
         $this->storage->expects($this->once())
           ->method("findTriplet")
-          ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_INVALID));
+          ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_INVALID));
         $this->cookie->expects($this->once())
           ->method("deleteCookie");
         $this->rememberme->login();
@@ -228,7 +228,7 @@ class RemembermeTest extends TestCase
         $this->userid, $this->invalidToken, $this->validPersistentToken, )));
         $this->storage->expects($this->any())
         ->method("findTriplet")
-        ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_INVALID));
+        ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_INVALID));
         $this->storage->expects($this->once())
         ->method("cleanAllTriplets")
         ->with($this->equalTo($this->userid));
@@ -248,7 +248,7 @@ class RemembermeTest extends TestCase
         $this->storage->expects($this->once())
         ->method("findTriplet")
         ->with($this->equalTo($this->userid), $this->equalTo($this->validToken.$salt), $this->equalTo($this->validPersistentToken.$salt))
-        ->will($this->returnValue(Birke\Rememberme\Storage\StorageInterface::TRIPLET_FOUND));
+        ->will($this->returnValue(Birke\Rememberme\Storage\AbstractStorage::TRIPLET_FOUND));
         $this->storage->expects($this->once())
         ->method("replaceTriplet")
         ->with(

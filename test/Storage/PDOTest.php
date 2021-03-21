@@ -3,7 +3,7 @@
  */
 
 use Birke\Rememberme\Storage\PDOStorage;
-use Birke\Rememberme\Storage\StorageInterface;
+use Birke\Rememberme\Storage\AbstractStorage;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -66,21 +66,21 @@ CRDB;
     {
         $this->insertFixtures();
         $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
-        $this->assertEquals(StorageInterface::TRIPLET_FOUND, $result);
+        $this->assertEquals(AbstractStorage::TRIPLET_FOUND, $result);
     }
 
     public function testFindTripletReturnsNotFoundIfNoDataMatches()
     {
         $this->pdo->exec("TRUNCATE tokens");
         $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
-        $this->assertEquals(StorageInterface::TRIPLET_NOT_FOUND, $result);
+        $this->assertEquals(AbstractStorage::TRIPLET_NOT_FOUND, $result);
     }
 
     public function testFindTripletReturnsInvalidTokenIfTokenIsInvalid()
     {
         $this->insertFixtures();
         $result = $this->storage->findTriplet($this->userid, $this->invalidToken, $this->validPersistentToken);
-        $this->assertEquals(StorageInterface::TRIPLET_INVALID, $result);
+        $this->assertEquals(AbstractStorage::TRIPLET_INVALID, $result);
     }
 
     public function testStoreTripletSavesValuesIntoDatabase()
@@ -109,6 +109,6 @@ CRDB;
 
     private function insertFixtures()
     {
-        $this->pdo->exec("INSERT INTO tokens (credential, token, persistent_token, expires) VALUES ('test', 'e0e6d29addce0fbdd0f845799be7d0395ed087c3', 'd27d330764ef61e99adf5d16f90b95a2a63c209a', '2035-12-21 21:21:00')");
+        $this->pdo->exec("INSERT INTO tokens (credential, token, persistent_token, expires) VALUES ('test', '{$this->validDBToken}', '{$this->validDBPersistentToken}', '2035-12-21 21:21:00')");
     }
 }

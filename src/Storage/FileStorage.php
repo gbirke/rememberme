@@ -9,7 +9,7 @@ namespace Birke\Rememberme\Storage;
 /**
  * File-Based Storage
  */
-class FileStorage implements StorageInterface
+class FileStorage extends AbstractStorage
 {
     /**
      * @var string
@@ -41,8 +41,8 @@ class FileStorage implements StorageInterface
     public function findTriplet($credential, $token, $persistentToken)
     {
         // Hash the tokens, because they can contain a salt and can be accessed in the file system
-        $persistentToken = sha1($persistentToken);
-        $token = sha1($token);
+        $persistentToken = $this->hash($persistentToken);
+        $token = $this->hash($token);
         $fn = $this->getFilename($credential, $persistentToken);
 
         if (!file_exists($fn)) {
@@ -69,8 +69,8 @@ class FileStorage implements StorageInterface
     public function storeTriplet($credential, $token, $persistentToken, $expire)
     {
         // Hash the tokens, because they can contain a salt and can be accessed in the file system
-        $persistentToken = sha1($persistentToken);
-        $token = sha1($token);
+        $persistentToken = $this->hash($persistentToken);
+        $token = $this->hash($token);
         $fn = $this->getFilename($credential, $persistentToken);
         file_put_contents($fn, $token);
 
@@ -83,7 +83,7 @@ class FileStorage implements StorageInterface
      */
     public function cleanTriplet($credential, $persistentToken)
     {
-        $persistentToken = sha1($persistentToken);
+        $persistentToken = $this->hash($persistentToken);
         $fn = $this->getFilename($credential, $persistentToken);
 
         if (file_exists($fn)) {

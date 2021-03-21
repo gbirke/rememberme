@@ -24,7 +24,7 @@ class Authenticator
     protected $cookie;
 
     /**
-     * @var Storage\StorageInterface
+     * @var Storage\AbstractStorage
      */
     protected $storage;
 
@@ -62,11 +62,11 @@ class Authenticator
     protected $salt = "";
 
     /**
-     * @param Storage\StorageInterface $storage
-     * @param TokenInterface           $tokenGenerator
-     * @param Cookie\CookieInterface   $cookie
+     * @param Storage\AbstractStorage $storage
+     * @param TokenInterface          $tokenGenerator
+     * @param Cookie\CookieInterface  $cookie
      */
-    public function __construct(Storage\StorageInterface $storage, TokenInterface $tokenGenerator = null, Cookie\CookieInterface $cookie = null)
+    public function __construct(Storage\AbstractStorage $storage, TokenInterface $tokenGenerator = null, Cookie\CookieInterface $cookie = null)
     {
         if (is_null($tokenGenerator)) {
             $tokenGenerator = new DefaultToken();
@@ -109,7 +109,7 @@ class Authenticator
             $triplet->getSaltedPersistentToken($this->salt)
         );
         switch ($tripletLookupResult) {
-            case Storage\StorageInterface::TRIPLET_FOUND:
+            case Storage\AbstractStorage::TRIPLET_FOUND:
                 $expire = time() + $this->expireTime;
                 $newTriplet = new Triplet($triplet->getCredential(), $this->tokenGenerator->createToken(), $triplet->getPersistentToken());
                 $this->storage->replaceTriplet(
@@ -122,7 +122,7 @@ class Authenticator
 
                 return LoginResult::newSuccessResult($triplet->getCredential());
 
-            case Storage\StorageInterface::TRIPLET_INVALID:
+            case Storage\AbstractStorage::TRIPLET_INVALID:
                 $this->cookie->deleteCookie();
 
                 if ($this->cleanStoredTokensOnInvalidResult) {

@@ -34,7 +34,7 @@ class PDOStorage extends AbstractDBStorage
             "AND {$this->persistentTokenColumn} = ? AND {$this->expiresColumn} > ? LIMIT 1";
 
         $query = $this->connection->prepare($sql);
-        $query->execute(array($credential, sha1($persistentToken), date("Y-m-d H:i:s")));
+        $query->execute(array($credential, $this->hash($persistentToken), date("Y-m-d H:i:s")));
 
         $result = $query->fetchColumn();
 
@@ -42,7 +42,7 @@ class PDOStorage extends AbstractDBStorage
             return self::TRIPLET_NOT_FOUND;
         }
 
-        if (sha1($token) === $result) {
+        if ($this->hash($token) === $result) {
             return self::TRIPLET_FOUND;
         }
 
@@ -62,7 +62,7 @@ class PDOStorage extends AbstractDBStorage
             "{$this->expiresColumn}) VALUES(?, ?, ?, ?)";
 
         $query = $this->connection->prepare($sql);
-        $query->execute(array($credential, sha1($token), sha1($persistentToken), date("Y-m-d H:i:s", $expire)));
+        $query->execute(array($credential, $this->hash($token), $this->hash($persistentToken), date("Y-m-d H:i:s", $expire)));
     }
 
     /**
@@ -75,7 +75,7 @@ class PDOStorage extends AbstractDBStorage
             "AND {$this->persistentTokenColumn} = ?";
 
         $query = $this->connection->prepare($sql);
-        $query->execute(array($credential, sha1($persistentToken)));
+        $query->execute(array($credential, $this->hash($persistentToken)));
     }
 
     /**
