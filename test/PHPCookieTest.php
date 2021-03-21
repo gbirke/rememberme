@@ -2,7 +2,7 @@
 
 // Mock PHP function
 namespace Birke\Rememberme\Cookie {
-    function setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly)
+    function setcookie($name, $value, $options)
     {
         return true;
     }
