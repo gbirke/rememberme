@@ -11,10 +11,10 @@ namespace Birke\Rememberme\Storage;
  *
  * @author Michaël Thieulin
  */
-class Redis extends AbstractStorage
+class RedisStorage extends AbstractStorage
 {
     /**
-     * @var Predis\Client
+     * @var \Predis\Client
      */
     protected $client;
 
@@ -25,10 +25,10 @@ class Redis extends AbstractStorage
 
 
     /**
-     * @param Predis\Client $client
-     * @param string        $keyPrefix
+     * @param \Predis\Client $client
+     * @param string         $keyPrefix
      */
-    public function __construct(Predis\Client $client, $keyPrefix = 'rememberme')
+    public function __construct(\Predis\Client $client, $keyPrefix = 'rememberme')
     {
         $this->client = $client;
         $this->keyPrefix = $keyPrefix;
