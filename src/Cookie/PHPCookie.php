@@ -39,7 +39,7 @@ class PHPCookie implements CookieInterface
     /**
      * @var bool
      */
-    protected $secure = false;
+    protected $secure = true;
 
     /**
      * @var bool
