@@ -24,6 +24,6 @@ class ClassicTokenTest extends TestCase
 
     public function testTokenIs32CharsInHexadecimal()
     {
-        $this->assertRegExp("/^[\\da-f]{32}$/", $this->token->createToken());
+        $this->assertMatchesRegularExpression("/^[\\da-f]{32}$/", $this->token->createToken());
     }
 }
