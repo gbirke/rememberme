@@ -71,7 +71,7 @@ CRDB;
 
     public function testFindTripletReturnsNotFoundIfNoDataMatches()
     {
-        $this->pdo->exec("TRUNCATE tokens");
+        $this->pdo->exec("DELETE FROM tokens");
         $result = $this->storage->findTriplet($this->userid, $this->validToken, $this->validPersistentToken);
         $this->assertEquals(AbstractStorage::TRIPLET_NOT_FOUND, $result);
     }
@@ -102,7 +102,8 @@ CRDB;
     public function testCleanAllTripletsRemovesAllEntriesWithMatchingCredentialsFromDatabase()
     {
         $this->insertFixtures();
-        $this->pdo->exec("INSERT INTO tokens VALUES ('{$this->userid}', 'dummy', 'dummy', NOW())");
+        $now = date("Y-m-d");
+        $this->pdo->exec("INSERT INTO tokens VALUES ('{$this->userid}', 'dummy', 'dummy', {$now})");
         $this->storage->cleanAllTriplets($this->userid);
         $this->assertEquals(0, $this->pdo->query("SELECT COUNT(*) FROM tokens")->fetchColumn());
     }
