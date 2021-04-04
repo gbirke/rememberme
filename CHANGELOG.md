@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.0 (2021-04-04)
+- Drop PHP support for versions < 7.4
+- Upgrade PHPUnit from 8.x to 9.x
+- Add Optional Redis Storage
+- Improve cookie handling (add same site and secure attributes)
+- Make hashing function configurable
+
 ## 3.0.0 (2020-05-05)
 - Drop PHP support for versions < 7.2
 - Upgrade PHPUnit and PHP Code Sniffer
