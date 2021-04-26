@@ -3,6 +3,9 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 4.0.1 (2021-04-26)
+- Update version number in composer.json
+
 ## 4.0.0 (2021-04-04)
 - Drop PHP support for versions < 7.4
 - Upgrade PHPUnit from 8.x to 9.x
