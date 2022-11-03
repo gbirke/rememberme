@@ -100,7 +100,7 @@ class Authenticator
         }
 
         if ($this->cleanExpiredTokensOnLogin) {
-            $this->storage->cleanExpiredTokens(time() - $this->expireTime);
+            $this->storage->cleanExpiredTokens(time());
         }
 
         $tripletLookupResult = $this->storage->findTriplet(
