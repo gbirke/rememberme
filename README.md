@@ -1,3 +1,6 @@
+> [!WARNING]  
+> This project has been abandoned in favor of https://github.com/m-ober/rememberme
+
 # Secure "Remember Me"
 This library implements the best practices for implementing a secure
 "Remember Me" functionality on web sites. Login information and unique secure 
